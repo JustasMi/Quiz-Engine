@@ -15,9 +15,10 @@ namespace Quiz_Engine
     {
         // TUTORIAL https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
         String myConnectionString = "server=127.0.0.1;uid=root;pwd=justas;database=mydb;";
-        public Form1()
+        public Form1(String userName)
         {
             InitializeComponent();
+            titleLabel.Text = "Hello, "+userName+".\nWelcome to this AMAZING Quiz Engine!";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -61,6 +62,12 @@ namespace Quiz_Engine
             //childForm = CreateTheChildForm();
             //childForm.MoreClick += More_Click;
             //childForm.Show();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Form questions = new Questions();
+            questions.Show();
         }
     }
 }
