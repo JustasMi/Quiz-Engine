@@ -20,6 +20,8 @@ namespace Quiz_Engine
 
         private void Topics_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'mydbDataSet1.subjects' table. You can move, or remove it, as needed.
+            this.subjectsTableAdapter.Fill(this.mydbDataSet1.subjects);
             // TODO: This line of code loads data into the 'mydbDataSet1.topics' table. You can move, or remove it, as needed.
             this.topicsTableAdapter.Fill(this.mydbDataSet1.topics);
 
@@ -28,6 +30,15 @@ namespace Quiz_Engine
         private void button1_Click(object sender, EventArgs e)
         {
             db.addTopic(newTopicBox.Text);
+            newTopicBox.Clear();
+            this.topicsTableAdapter.Fill(this.mydbDataSet1.topics);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            db.addSubject(newSubjectTextBox.Text);
+            newSubjectTextBox.Clear();
+            this.subjectsTableAdapter.Fill(this.mydbDataSet1.subjects);
         }
     }
 }

@@ -30,21 +30,22 @@ namespace Quiz_Engine
         private void addButton_Click(object sender, EventArgs e)
         {
             int questionID = db.addQuestion(textBox1.Text, (int) comboBox1.SelectedValue);
-            db.addAnswers(questionID, listBox1.Items.Cast<String>().ToList());
+            //db.addAnswers(questionID, listBox1.Items.Cast<String>().ToList());
+            db.addAnswers(questionID, checkedListBox1.Items.Cast<String>().ToList());
             
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            listBox1.Items.Add(textBox2.Text);
+            //listBox1.Items.Add(textBox2.Text);
+            checkedListBox1.Items.Add(textBox2.Text);
             textBox2.Clear();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            listBox1.Items.Remove(listBox1.SelectedItem);
-            
-            //System.Diagnostics.Debug.WriteLine(myOtherList.ToString());
+            //listBox1.Items.Remove(listBox1.SelectedItem);
+            checkedListBox1.Items.Remove(checkedListBox1.SelectedItem);
         }
     }
 }

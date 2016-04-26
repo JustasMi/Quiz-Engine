@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Quiz_Engine.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,31 @@ namespace Quiz_Engine
 
             MySqlCommand command = new MySqlCommand(sqlCommand, conn);
             command.ExecuteNonQuery();
+        }
+
+        public void addSubject(String subject)
+        {
+            String sqlCommand = "INSERT INTO subjects (name) VALUES('" + subject + "');";
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            command.ExecuteNonQuery();
+        }
+
+        public List<Topic> getTopics(int subjectID)
+        {
+            List<Topic> topics = new List<Topic>();
+
+            String sqlCommand = "SELECT id, name FROM topics WHERE subject="+subjectID+";";
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            MySqlDataReader rdr = command.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                System.Diagnostics.Debug.WriteLine(rdr[0] + " -- " + rdr[1]);
+                topics.Add(new Topic(Int32.Parse(rdr[0].ToString()), rdr[1].ToString()));
+            }
+            rdr.Close();
+            
+            return topics;
         }
     }
 }

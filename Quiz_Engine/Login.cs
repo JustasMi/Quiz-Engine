@@ -46,7 +46,7 @@ namespace Quiz_Engine
             //main.Show();
 
             this.Hide();
-            Form form = new Form1(userName);
+            Form form = new Main(userName);
             form.Closed += (s, args) => this.Close();
             form.Show();
         }
