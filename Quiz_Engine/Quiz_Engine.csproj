@@ -49,7 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Answer.cs" />
+    <Compile Include="Classes\Question.cs" />
     <Compile Include="Classes\Topic.cs" />
+    <Compile Include="Classes\User.cs" />
     <Compile Include="DButility.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>

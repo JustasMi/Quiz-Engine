@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Quiz_Engine.Classes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,9 +31,22 @@ namespace Quiz_Engine
         private void addButton_Click(object sender, EventArgs e)
         {
             int questionID = db.addQuestion(textBox1.Text, (int) comboBox1.SelectedValue);
-            //db.addAnswers(questionID, listBox1.Items.Cast<String>().ToList());
-            db.addAnswers(questionID, checkedListBox1.Items.Cast<String>().ToList());
-            
+
+            List<Answer> answers = new List<Answer>();
+            foreach (var s in checkedListBox1.Items)
+            {
+                CheckState st = checkedListBox1.GetItemCheckState(checkedListBox1.Items.IndexOf(s));
+                if (st == CheckState.Checked)
+                {
+                    answers.Add(new Answer(s.ToString(), true));
+                }
+                else
+                {
+                    answers.Add(new Answer(s.ToString(), false));
+                }
+            }
+            //db.addAnswers(questionID, checkedListBox1.Items.Cast<String>().ToList());
+            db.addAnswers(questionID, answers);
         }
 
         private void button1_Click(object sender, EventArgs e)

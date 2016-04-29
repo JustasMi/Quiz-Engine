@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Quiz_Engine.Classes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,31 +23,35 @@ namespace Quiz_Engine
         // Continue button
         private void button1_Click(object sender, EventArgs e)
         {
-            goToMainForm(listBox1.GetItemText(listBox1.SelectedItem));
+            if (listBox1.SelectedItem != null)
+            {
+                goToMainForm(new User(listBox1.GetItemText(listBox1.SelectedItem), Int32.Parse(listBox1.SelectedValue.ToString())));
+            }
         }
 
         private void Login_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the 'mydbDataSet1.users' table. You can move, or remove it, as needed.
             this.usersTableAdapter.Fill(this.mydbDataSet1.users);
+            listBox1.ClearSelected();
 
         }
 
         // Add new User
         private void button2_Click(object sender, EventArgs e)
         {
-            db.addUser(textBox1.Text);
-            goToMainForm(textBox1.Text);
+            int userID = db.addUser(textBox1.Text);
+            goToMainForm(new User(textBox1.Text, userID));
         }
 
-        private void goToMainForm(String userName)
+        private void goToMainForm(User user)
         {
             //this.Close();
             //Form main = new Form1(userName);
             //main.Show();
 
             this.Hide();
-            Form form = new Main(userName);
+            Form form = new Main(user);
             form.Closed += (s, args) => this.Close();
             form.Show();
         }

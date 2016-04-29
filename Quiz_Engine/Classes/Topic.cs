@@ -11,6 +11,8 @@ namespace Quiz_Engine.Classes
         private String name;
         private int id;
 
+        private List<Question> questions;
+
         public int Id
         {
             get
@@ -32,6 +34,18 @@ namespace Quiz_Engine.Classes
             set
             {
                 this.name = value;
+            }
+        }
+
+        public List<Question> Questions
+        {
+            get
+            {
+                return this.questions;
+            }
+            set
+            {
+                this.questions = value;
             }
         }
 

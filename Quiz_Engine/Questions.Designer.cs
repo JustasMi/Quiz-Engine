@@ -40,9 +40,9 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             ((System.ComponentModel.ISupportInitialize)(this.topicsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mydbDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -105,7 +105,7 @@
             // 
             this.addButton.Location = new System.Drawing.Point(12, 421);
             this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(517, 23);
+            this.addButton.Size = new System.Drawing.Size(262, 23);
             this.addButton.TabIndex = 4;
             this.addButton.Text = "Add Question";
             this.addButton.UseVisualStyleBackColor = true;
@@ -148,6 +148,14 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.Location = new System.Drawing.Point(3, 3);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.Size = new System.Drawing.Size(165, 214);
+            this.checkedListBox1.TabIndex = 8;
+            // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(12, 141);
@@ -163,14 +171,6 @@
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Answer";
-            // 
-            // checkedListBox1
-            // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(3, 3);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(165, 214);
-            this.checkedListBox1.TabIndex = 8;
             // 
             // Questions
             // 

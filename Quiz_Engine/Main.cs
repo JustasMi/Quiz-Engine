@@ -17,11 +17,25 @@ namespace Quiz_Engine
         // TUTORIAL https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
         //String myConnectionString = "server=127.0.0.1;uid=root;pwd=justas;database=mydb;";
         DButility db = new DButility();
+        User currentUser;
 
-        public Main(String userName)
+        public Main(User user)
         {
             InitializeComponent();
-            titleLabel.Text = "Hello, "+userName+".\nWelcome to this AMAZING Quiz Engine!";
+            currentUser = user;
+            titleLabel.Text = "Hello, "+user.Name+".\nWelcome to this AMAZING Quiz Engine!";
+
+            setUpPreviousQuizes();
+        }
+
+        private void setUpPreviousQuizes()
+        {
+            //listView1.Items.Add("Thingy");
+            //listView1.Items[0].SubItems.Add("Yo");
+            //listView1.Items[0].SubItems.Add("Ho");
+            listView1.Items.Add("Test 1").SubItems.AddRange(new string[] { "item1", "item2", "item3" });
+            listView1.Items.Add("Test 2").SubItems.AddRange(new string[] { "item1", "item2", "item3" });
+            listView1.Items.Add("Test 3").SubItems.AddRange(new string[] { "item1", "item2", "item3" });
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -102,18 +116,22 @@ namespace Quiz_Engine
         // Take test
         private void button4_Click(object sender, EventArgs e)
         {
-            List<Topic> checkedTopics = new List<Topic>();
+            List<Topic> selectedTopics = new List<Topic>();
 
             foreach (object o in checkedListBox1.CheckedItems)
             {
-                checkedTopics.Add((Topic) o);
+                selectedTopics.Add((Topic) o);
             }
 
-
             this.Hide();
-            Form form = new Test(checkedTopics);
+            Form form = new Test(selectedTopics, currentUser);
             form.Closed += (s, args) => this.Show();
             form.Show();
+        }
+
+        private void listView1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("SELECTION!");
         }
     }
 }
