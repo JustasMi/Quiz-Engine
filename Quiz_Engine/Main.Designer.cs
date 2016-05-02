@@ -179,10 +179,11 @@
             // 
             this.button5.Location = new System.Drawing.Point(366, 379);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(311, 43);
+            this.button5.Size = new System.Drawing.Size(406, 43);
             this.button5.TabIndex = 14;
             this.button5.Text = "Retake Test";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.testRetake_Button_Click);
             // 
             // listView1
             // 
@@ -193,21 +194,22 @@
             this.columnHeader4});
             this.listView1.FullRowSelect = true;
             this.listView1.Location = new System.Drawing.Point(366, 163);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(311, 214);
+            this.listView1.Size = new System.Drawing.Size(406, 214);
             this.listView1.TabIndex = 15;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listView1_ItemSelectionChanged);
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Topic";
-            this.columnHeader1.Width = 130;
+            this.columnHeader1.Width = 170;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Date";
+            this.columnHeader2.Width = 120;
             // 
             // columnHeader3
             // 

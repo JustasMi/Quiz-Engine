@@ -11,17 +11,21 @@ namespace Quiz_Engine.Classes
         private String answer;
         private Boolean correct = false;
         private Boolean selected = false;
+        private int id;
 
-
-        public Answer(String answer)
+        
+        public Answer(String answer, Boolean correct)
         {
             this.answer = answer;
+            this.correct = correct;
         }
+        
 
-        public Answer (String answer, Boolean correct)
+        public Answer (String answer, Boolean correct, int id)
         {
             this.answer = answer;
-            this.correct = correct; 
+            this.correct = correct;
+            this.id = id;
         }
 
         public string AnswerText
@@ -33,6 +37,18 @@ namespace Quiz_Engine.Classes
             set
             {
                 this.answer = value;
+            }
+        }
+
+        public int Id
+        {
+            get
+            {
+                return this.id;
+            }
+            set
+            {
+                this.id = value;
             }
         }
 

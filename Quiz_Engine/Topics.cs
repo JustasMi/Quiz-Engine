@@ -27,13 +27,15 @@ namespace Quiz_Engine
 
         }
 
+        // Add topic
         private void button1_Click(object sender, EventArgs e)
         {
-            db.addTopic(newTopicBox.Text);
+            db.addTopic(newTopicBox.Text, Int32.Parse(comboBox1.SelectedValue.ToString()));
             newTopicBox.Clear();
             this.topicsTableAdapter.Fill(this.mydbDataSet1.topics);
         }
 
+        // Add subject
         private void button2_Click(object sender, EventArgs e)
         {
             db.addSubject(newSubjectTextBox.Text);

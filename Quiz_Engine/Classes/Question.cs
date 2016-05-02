@@ -12,12 +12,20 @@ namespace Quiz_Engine.Classes
         private string question;
         private Topic topic;
         private List<Answer> answers;
+        private string question_type;
+        private string difficulty;
+        private string nature;
+        private string feedback;
 
-        public Question(int id, string question, Topic topic)
+        public Question(int id, string question, Topic topic, String question_type, String difficulty, String nature, String feedback)
         {
             this.id = id;
             this.question = question;
             this.topic = topic;
+            this.question_type = question_type;
+            this.difficulty = difficulty;
+            this.nature = nature;
+            this.feedback = feedback;
         }
 
         public int Id
@@ -41,6 +49,54 @@ namespace Quiz_Engine.Classes
             set
             {
                 this.question = value;
+            }
+        }
+
+        public string QuestionType
+        {
+            get
+            {
+                return this.question_type;
+            }
+            set
+            {
+                this.question_type = value;
+            }
+        }
+
+        public string Difficulty
+        {
+            get
+            {
+                return this.difficulty;
+            }
+            set
+            {
+                this.difficulty = value;
+            }
+        }
+
+        public string Nature
+        {
+            get
+            {
+                return this.nature;
+            }
+            set
+            {
+                this.nature = value;
+            }
+        }
+
+        public string Feedback
+        {
+            get
+            {
+                return this.feedback;
+            }
+            set
+            {
+                this.feedback = value;
             }
         }
 

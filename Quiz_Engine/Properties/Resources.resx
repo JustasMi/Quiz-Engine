@@ -120,4 +120,16 @@
   <data name="connectionString" xml:space="preserve">
     <value>server=127.0.0.1;uid=root;pwd=justas;database=mydb;</value>
   </data>
+  <data name="fillInTheAnswer" xml:space="preserve">
+    <value>Fill In The Answer</value>
+  </data>
+  <data name="multipleAnswer" xml:space="preserve">
+    <value>Multiple Answers</value>
+  </data>
+  <data name="multipleChoice" xml:space="preserve">
+    <value>Multiple Choice</value>
+  </data>
+  <data name="trueFalse" xml:space="preserve">
+    <value>True/False</value>
+  </data>
 </root>

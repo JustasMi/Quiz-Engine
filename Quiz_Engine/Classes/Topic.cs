@@ -11,7 +11,7 @@ namespace Quiz_Engine.Classes
         private String name;
         private int id;
 
-        private List<Question> questions;
+        //private List<Question> questions;
 
         public int Id
         {
@@ -37,6 +37,7 @@ namespace Quiz_Engine.Classes
             }
         }
 
+        /*
         public List<Question> Questions
         {
             get
@@ -48,30 +49,14 @@ namespace Quiz_Engine.Classes
                 this.questions = value;
             }
         }
+         */
 
 
         public Topic(int id, String name)
         {
             this.id = id;
             this.name = name;
-        }
-
-        /*
-        public String getName()
-        {
-            return this.name;
-        }
-
-        public int getId()
-        {
-            return this.id;
-        }
-        */
-        public override string ToString()
-        {
-            return this.name;
-        }
-         
+        }       
 
     }
 }

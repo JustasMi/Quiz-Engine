@@ -16,8 +16,9 @@ namespace Quiz_Engine
     {
         // TUTORIAL https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
         //String myConnectionString = "server=127.0.0.1;uid=root;pwd=justas;database=mydb;";
-        DButility db = new DButility();
-        User currentUser;
+        private DButility db = new DButility();
+        private User currentUser;
+        List<Quiz> quiz_history;
 
         public Main(User user)
         {
@@ -30,12 +31,18 @@ namespace Quiz_Engine
 
         private void setUpPreviousQuizes()
         {
-            //listView1.Items.Add("Thingy");
-            //listView1.Items[0].SubItems.Add("Yo");
-            //listView1.Items[0].SubItems.Add("Ho");
-            listView1.Items.Add("Test 1").SubItems.AddRange(new string[] { "item1", "item2", "item3" });
-            listView1.Items.Add("Test 2").SubItems.AddRange(new string[] { "item1", "item2", "item3" });
-            listView1.Items.Add("Test 3").SubItems.AddRange(new string[] { "item1", "item2", "item3" });
+            quiz_history = db.getQuizHistory(currentUser);
+
+            foreach (Quiz quiz in quiz_history)
+            {
+                listView1.Items.Add(quiz.Topics).SubItems.AddRange(new string[] {quiz.Date.ToString(), quiz.TotalQuestions.ToString(), quiz.CorrectAnswers.ToString() });
+                listView1.Items[listView1.Items.Count - 1].Tag = quiz.Id;
+            }
+            //listView1.Groups.Add(new ListViewGroup("New group?", HorizontalAlignment.Left));
+            //listView1.Items[listView1.Items.Count - 1].Group = listView1.Groups[0];
+            //listView1.Items[listView1.Items.Count - 2].Group = listView1.Groups[0];
+            //listView1.Items.Add("lol").SubItems.AddRange(new string[] { "lol", "lol", "lol" });
+            //listView1.Items[2].add
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -129,9 +136,22 @@ namespace Quiz_Engine
             form.Show();
         }
 
-        private void listView1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void testRetake_Button_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("SELECTION!");
+            if (listView1.SelectedItems.Count > 0)
+            {
+                Quiz quiz = quiz_history.Find(q => q.Id == (int) listView1.SelectedItems[0].Tag);
+                //System.Diagnostics.Debug.WriteLine("Selected item TAG: " + listView1.SelectedItems[0].Tag);
+
+                this.Hide();
+                Form form = new Test(quiz, currentUser);
+                form.Closed += (s, args) => this.Show();
+                form.Show();
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Nothing is selected");
+            }
         }
     }
 }

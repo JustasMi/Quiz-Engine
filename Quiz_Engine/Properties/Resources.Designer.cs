@@ -68,5 +68,41 @@ namespace Quiz_Engine.Properties {
                 return ResourceManager.GetString("connectionString", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill In The Answer.
+        /// </summary>
+        internal static string fillInTheAnswer {
+            get {
+                return ResourceManager.GetString("fillInTheAnswer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple Answers.
+        /// </summary>
+        internal static string multipleAnswer {
+            get {
+                return ResourceManager.GetString("multipleAnswer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple Choice.
+        /// </summary>
+        internal static string multipleChoice {
+            get {
+                return ResourceManager.GetString("multipleChoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to True/False.
+        /// </summary>
+        internal static string trueFalse {
+            get {
+                return ResourceManager.GetString("trueFalse", resourceCulture);
+            }
+        }
     }
 }
