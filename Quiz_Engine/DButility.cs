@@ -69,9 +69,9 @@ namespace Quiz_Engine
             command.ExecuteNonQuery();
         }
 
-        public int addUser(String name)
+        public int addUser(String name, int passwordHashed)
         {
-            String sqlCommand = "INSERT INTO users (name) VALUES ('"+name+"');";
+            String sqlCommand = "INSERT INTO users (name, password) VALUES ('"+name+"', "+passwordHashed+");";
 
             MySqlCommand command = new MySqlCommand(sqlCommand, conn);
             command.ExecuteNonQuery();
@@ -151,14 +151,50 @@ namespace Quiz_Engine
             int correct_answers = 0;
             foreach (Question q in questions)
             {
-                foreach (Answer a in q.Answers)
+                if (q.QuestionType == Quiz_Engine.Properties.Resources.multipleChoice)
                 {
-                    if (a.Selected && a.Correct)
+                    foreach (Answer a in q.Answers)
+                    {
+                        if (a.Selected && a.Correct)
+                        {
+                            correct_answers += 1;
+                        }
+                    }
+                }
+                else if (q.QuestionType == Quiz_Engine.Properties.Resources.multipleAnswer)
+                {
+                    int correctAnswerCount = 0;
+                    foreach (Answer a in q.Answers)
+                    {
+                        if ((a.Correct && a.Selected) || (!a.Correct && !a.Selected))
+                            correctAnswerCount += 1;
+                    }
+
+                    if (correctAnswerCount == q.Answers.Count)
+                    {
+                        correct_answers += 1;
+                    } 
+                }
+                else if (q.QuestionType == Quiz_Engine.Properties.Resources.trueFalse)
+                {
+                    foreach (Answer a in q.Answers)
+                    {
+                        if (a.Selected && a.Correct)
+                        {
+                            correct_answers += 1;
+                        }
+                    }
+                }
+                else
+                {
+                    // Fill in The Answer question
+                    if (q.Answers[0].TypedAnswer.Equals(q.Answers[0].AnswerText, StringComparison.InvariantCultureIgnoreCase))
                     {
                         correct_answers += 1;
                     }
                 }
             }
+
             String sqlCommand = "INSERT INTO quiz_history (user, date, total_questions, correct_answers, topics) VALUES (" + currentUser.Id + ", NOW(), " + questions.Count + ", " + correct_answers + ", '"+topics+"');";
             //DATE(NOW())
             MySqlCommand command = new MySqlCommand(sqlCommand, conn);
@@ -179,11 +215,34 @@ namespace Quiz_Engine
             foreach (Question q in questions)
             {
                 String selectedAnswer = q.Answers.Find(answer => answer.Selected) != null ? q.Answers.Find(answer => answer.Selected).Id.ToString() : "NULL";
-                
                 // Check if answer was correct, in that case value 1, else 0
                 int correctness = 0;
-                if (q.Answers.Find(answer => answer.Selected) != null && q.Answers.Find(answer => answer.Selected).Correct)
-                    correctness = 1;
+                
+                if (q.QuestionType == Quiz_Engine.Properties.Resources.multipleChoice || q.QuestionType == Quiz_Engine.Properties.Resources.trueFalse)
+                {
+                    if (q.Answers.Find(answer => answer.Selected) != null && q.Answers.Find(answer => answer.Selected).Correct)
+                        correctness = 1;
+                }
+                else if (q.QuestionType == Quiz_Engine.Properties.Resources.multipleAnswer)
+                {
+                    int answerCount = 0;
+                    foreach (Answer a in q.Answers)
+                    {
+                        if ((a.Correct && a.Selected) || (!a.Correct && !a.Selected))
+                        {
+                            answerCount += 1;
+                        }
+                    }
+
+                    if (answerCount == q.Answers.Count)
+                        correctness = 1;
+                }
+                else if (q.QuestionType == Quiz_Engine.Properties.Resources.fillInTheAnswer)
+                {
+                    if (q.Answers[0].AnswerText.Equals(q.Answers[0].TypedAnswer, StringComparison.InvariantCultureIgnoreCase))
+                        correctness = 1;
+                }
+
                 sqlCommand += "(" + q.Id + ", " + selectedAnswer + ", "+correctness+", " + q.Topic.Id + ", " + quiz_history_ID + "), ";
             }
             sqlCommand = sqlCommand.Remove(sqlCommand.Length - 2) + ";";
@@ -228,13 +287,15 @@ namespace Quiz_Engine
         public List<Question> getQuizQuestions(int quizID)
         {
             List<Question> questions = new List<Question>();
-            String sqlCommand = "SELECT a.id, a.question, a.topic, b.name FROM questions a, topics b WHERE a.id IN (SELECT question FROM quiz_history_questions WHERE quiz="+quizID+") AND a.topic = b.id;";
+            //String sqlCommand = "SELECT a.id, a.question, a.topic, b.name FROM questions a, topics b WHERE a.id IN (SELECT question FROM quiz_history_questions WHERE quiz="+quizID+") AND a.topic = b.id;";
+            String sqlCommand = "SELECT a.id, a.question, a.topic, a.question_type, a.difficulty, a.nature, a.feedback, b.name FROM questions a, topics b WHERE a.id IN (SELECT question FROM quiz_history_questions WHERE quiz="+quizID+") AND a.topic = b.id;";
             MySqlCommand command = new MySqlCommand(sqlCommand, conn);
             MySqlDataReader rdr = command.ExecuteReader();
             while (rdr.Read())
             {
-                //TODO: COMMENT THIS BACK IN!
+                // id 0, question 1, topic 2, question type 3, difficulty 4, nature 5, feedback 6, topic name 7  
                 //questions.Add(new Question(Int32.Parse(rdr[0].ToString()), rdr[1].ToString(), new Topic(Int32.Parse(rdr[2].ToString()), rdr[3].ToString())));
+                questions.Add(new Question(Int32.Parse(rdr[0].ToString()), rdr[1].ToString(), new Topic(Int32.Parse(rdr[2].ToString()), rdr[7].ToString()), rdr[3].ToString(), rdr[4].ToString(), rdr[5].ToString(), rdr[6].ToString()));
             }
             rdr.Close();
 
@@ -253,6 +314,135 @@ namespace Quiz_Engine
             String sqlCommand = "INSERT INTO answers (answer, questionId, correct) VALUES ('"+answer+"', " + questionID + ", " + true + ");";
             MySqlCommand command = new MySqlCommand(sqlCommand, conn);
             command.ExecuteNonQuery();
+        }
+
+        public bool verifyUser(string userId, int hashedPassword)
+        {
+            String sqlCommand = "SELECT password FROM users WHERE id="+userId+";";
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            MySqlDataReader rdr = command.ExecuteReader();
+            rdr.Read();
+            int password = Int32.Parse(rdr[0].ToString());
+            rdr.Close();
+
+            if (password == hashedPassword)
+                return true;
+            return false;
+        }
+
+        public List<Question> getQuestionsFromPreferences(QuizPreference preferences)
+        {
+            List<Question> questions = new List<Question>();
+            bool difficultyPreference = false;
+            bool naturePreference = false;
+            String sqlCommand = "SELECT q.id, q.question, q.question_type, q.difficulty, q.nature, q.feedback, q.topic, t.name FROM questions q, topics t WHERE ";
+            
+            if (preferences.Easy)
+            {
+                sqlCommand += "(q.difficulty = 'Easy' ";
+                difficultyPreference = true;
+            }
+
+            if (preferences.Intermediate)
+            {
+                if (difficultyPreference)
+                {
+                    sqlCommand += "OR q.difficulty = 'Intermediate' ";
+                }
+                else
+                {
+                    sqlCommand += "(q.difficulty = 'Intermediate' ";
+                    difficultyPreference = true;
+                }
+            }
+
+            if (preferences.Hard)
+            {
+                if (difficultyPreference)
+                {
+                    sqlCommand += "OR q.difficulty = 'Hard') ";
+                }
+                else
+                {
+                    sqlCommand += "(q.difficulty = 'Hard') ";
+                    difficultyPreference = true;
+                }
+            }
+            else
+            {
+                if (difficultyPreference)
+                {
+                    sqlCommand +=") ";
+                }
+            }
+
+            if (preferences.Application || preferences.Background || preferences.Bookwork)
+            {
+                if (difficultyPreference)
+                {
+                    sqlCommand += "AND ";
+                }
+
+                if (preferences.Application)
+                {
+                    sqlCommand += "(q.nature = 'Application' ";
+                    naturePreference = true;
+                }
+
+                if (preferences.Background)
+                {
+                    if (naturePreference)
+                    {
+                        sqlCommand += "OR q.nature = 'Background' ";
+                    }
+                    else
+                    {
+                        sqlCommand += "(q.nature = 'Background' ";
+                        naturePreference = true;
+                    }
+                }
+
+                if (preferences.Bookwork)
+                {
+                    if (naturePreference)
+                    {
+                        sqlCommand += "OR q.nature = 'Bookwork') ";
+                    }
+                    else
+                    {
+                        sqlCommand += "(q.nature = 'Bookwork') ";
+                        naturePreference = true;
+                    }
+                }
+                else if (naturePreference)
+                {
+                    sqlCommand += ") ";
+                }
+            }
+
+            if (preferences.Topics.Count > 0)
+            {
+                sqlCommand += "AND (";
+                foreach (Topic t in preferences.Topics)
+                {
+                    sqlCommand += "q.topic=" + t.Id + " OR ";
+                }
+                sqlCommand = sqlCommand.Remove(sqlCommand.Length - 3);
+                sqlCommand += ") ";
+            }
+
+            sqlCommand += "AND (q.topic = t.id) ORDER BY RAND() LIMIT " + preferences.QuizSize + ";";
+
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            MySqlDataReader rdr = command.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                questions.Add(new Question(Int32.Parse(rdr[0].ToString()), rdr[1].ToString(), new Topic(Int32.Parse(rdr[6].ToString()), rdr[7].ToString()), rdr[2].ToString(), rdr[3].ToString(), rdr[4].ToString(), rdr[5].ToString()));
+            }
+            rdr.Close();
+            System.Diagnostics.Debug.WriteLine(sqlCommand);
+            return questions;
         }
     }
 }

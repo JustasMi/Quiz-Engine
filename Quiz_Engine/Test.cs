@@ -25,6 +25,7 @@ namespace Quiz_Engine
         // Variables for quiz retaking
         private bool retakingQuiz = false;
         private Quiz quiz;
+        private List<Topic> selectedTopics;
         
         // Constructor for taking new tests
         public Test(List<Topic> topics, User user)
@@ -34,7 +35,7 @@ namespace Quiz_Engine
             this.currentUser = user;
 
 
-            prepareQuestions();
+            prepareQuestions(false);
             prepareUi();
         }
 
@@ -47,7 +48,17 @@ namespace Quiz_Engine
             retakingQuiz = true;
             this.quiz = quiz;
 
-            prepareQuestions();
+            prepareQuestions(false);
+            prepareUi();
+        }
+
+        public Test(List<Question> questions, List<Topic> selectedTopics, User currentUser)
+        {
+            this.questions = questions;
+            this.selectedTopics = selectedTopics;
+            this.currentUser = currentUser;
+
+            prepareQuestions(true);
             prepareUi();
         }
 
@@ -69,43 +80,36 @@ namespace Quiz_Engine
             toolStripUserLabel.Text = currentUser.Name;
         }
 
-        private void prepareQuestions()
+        private void prepareQuestions(bool questionsInitialized)
         {
-            List<Question> questionList = new List<Question>();
-            if (retakingQuiz)
+            if (!questionsInitialized)
             {
-                // When retaking past quiz
-                questionList.AddRange(db.getQuizQuestions(quiz.Id));
-            }
-            else
-            {
-                // Generating a new quiz
-                int questionAmount = (int)Math.Ceiling((double)questionLimit / (double)topics.Count);
-
-                foreach (Topic t in topics)
+                List<Question> questionList = new List<Question>();
+                if (retakingQuiz)
                 {
-                    // get questions for every topic
-                    questionList.AddRange(db.getQuestions(t, questionAmount));
+                    // When retaking past quiz
+                    questionList.AddRange(db.getQuizQuestions(quiz.Id));
                 }
+                else
+                {
+                    // Generating a new quiz
+                    int questionAmount = (int)Math.Ceiling((double)questionLimit / (double)topics.Count);
+
+                    foreach (Topic t in topics)
+                    {
+                        // get questions for every topic
+                        questionList.AddRange(db.getQuestions(t, questionAmount));
+                    }
+                }
+                questions.AddRange(questionList);
             }
 
             // preload answers to questions
-            foreach (Question q in questionList)
+            foreach (Question q in questions)
             {
                 q.Answers = db.getAnswers(q.Id);
-
-                /*
-                if (q.QuestionType == Quiz_Engine.Properties.Resources.trueFalse)
-                {
-                    Answer a = q.Answers[0];
-                    List<Answer> ans = new List<Answer>();
-                    ans.Add(new Answer("True", a.Correct));
-                    ans.Add(new Answer("False", !a.Correct));
-                    q.Answers = ans;
-                }
-                 */
             }
-            questions.AddRange(questionList);
+
 
             if (questions.Count == 0)
             {
@@ -197,6 +201,7 @@ namespace Quiz_Engine
             }
             else if (questions[index].QuestionType == Quiz_Engine.Properties.Resources.fillInTheAnswer)
             {
+                textBox7.Text = questions[displayedQuestionIndex].Answers[0].TypedAnswer;
                 panel3.Visible = true;
                 panel3.Location = new Point(116, 355);
             }
@@ -258,43 +263,6 @@ namespace Quiz_Engine
             panel2.Visible = false;
             panel3.Visible = false;
         }
-        /*
-        private void trueFalse_Text_Changed(object sender, EventArgs e)
-        {
-            
-            ComboBox cb = (ComboBox)sender;
-            
-            if (cb.SelectedItem != null)
-            {
-                foreach (object o in cb.Items)
-                {
-                    Answer a = (Answer)o;
-
-                    if ((Answer)cb.SelectedItem == a)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Selected item found");
-                        a.Selected = true;
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("Selected item not found");
-                        a.Selected = false;
-                    }
-
-                }
-            }
-            */
-
-            /*
-            if (cb.SelectedItem != null)
-            {
-                Answer a = (Answer)cb.SelectedItem;
-                a.Selected = true;
-            }
-             
-        }
-             */
-
 
         private void radioButton2_Click(object sender, EventArgs e)
         {
@@ -313,6 +281,27 @@ namespace Quiz_Engine
                     a.Selected = radioButton2.Checked;
                 }
             }
+        }
+
+        // Save answer whenever the text is chagned
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+            if ( ((TextBox) sender).Text != String.Empty)
+                questions[displayedQuestionIndex].Answers[0].TypedAnswer = ((TextBox)sender).Text;
+
+            if (questions[displayedQuestionIndex].Answers[0].TypedAnswer != String.Empty)
+            {
+                questions[displayedQuestionIndex].Answers[0].Selected = true;
+            }
+            else
+            {
+                questions[displayedQuestionIndex].Answers[0].Selected = false;
+            }
+        }
+
+        private void feedback_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Quesstion feedback: "+questions[displayedQuestionIndex].Feedback+"\nSelected answer is: ");
         }
     }
 }

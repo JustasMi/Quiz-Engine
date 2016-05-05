@@ -52,6 +52,7 @@
     <Compile Include="Classes\Answer.cs" />
     <Compile Include="Classes\Question.cs" />
     <Compile Include="Classes\Quiz.cs" />
+    <Compile Include="Classes\QuizPreference.cs" />
     <Compile Include="Classes\Topic.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="DButility.cs" />

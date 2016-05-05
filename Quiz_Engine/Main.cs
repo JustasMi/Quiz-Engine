@@ -38,11 +38,6 @@ namespace Quiz_Engine
                 listView1.Items.Add(quiz.Topics).SubItems.AddRange(new string[] {quiz.Date.ToString(), quiz.TotalQuestions.ToString(), quiz.CorrectAnswers.ToString() });
                 listView1.Items[listView1.Items.Count - 1].Tag = quiz.Id;
             }
-            //listView1.Groups.Add(new ListViewGroup("New group?", HorizontalAlignment.Left));
-            //listView1.Items[listView1.Items.Count - 1].Group = listView1.Groups[0];
-            //listView1.Items[listView1.Items.Count - 2].Group = listView1.Groups[0];
-            //listView1.Items.Add("lol").SubItems.AddRange(new string[] { "lol", "lol", "lol" });
-            //listView1.Items[2].add
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -100,27 +95,50 @@ namespace Quiz_Engine
         {
             // TODO: This line of code loads data into the 'mydbDataSet1.subjects' table. You can move, or remove it, as needed.
             this.subjectsTableAdapter.Fill(this.mydbDataSet1.subjects);
-            updateTopics();
+            //updateTopics();
+            comboBox1.SelectedIndex = -1;
+            comboBox2.SelectedIndex = -1;
+
+            for (int i=0; i < checkedListBox3.Items.Count; i++)
+            {
+                checkedListBox3.SetItemChecked(i, true);
+            }
+
+            for (int i = 0; i < checkedListBox4.Items.Count; i++)
+            {
+                checkedListBox4.SetItemChecked(i, true);
+            }
         }
 
         private void comboBox1_TextChanged(object sender, EventArgs e)
         {
-            updateTopics();
+            ComboBox cb = (ComboBox)sender;
+            updateTopics(cb);
         }
 
-        private void updateTopics()
+        private void updateTopics(ComboBox cb)
         {
             List<Topic> topics = new List<Topic>();
 
-            if (comboBox1.SelectedValue != null)
-                topics = db.getTopics(Int32.Parse(comboBox1.SelectedValue.ToString()));
+            if (cb.SelectedValue != null)
+                topics = db.getTopics(Int32.Parse(cb.SelectedValue.ToString()));
 
-            this.checkedListBox1.DataSource = topics;
-            this.checkedListBox1.DisplayMember = "name";
-            this.checkedListBox1.ValueMember = "id";
+            if (cb.Tag.ToString().Equals("Fast"))
+            {
+                this.checkedListBox1.DataSource = topics;
+                this.checkedListBox1.DisplayMember = "name";
+                this.checkedListBox1.ValueMember = "id";
+            }
+            else
+            {
+                this.checkedListBox2.DataSource = topics;
+                this.checkedListBox2.DisplayMember = "name";
+                this.checkedListBox2.ValueMember = "id";
+            }
+
         }
 
-        // Take test
+        // Take fast Quiz
         private void button4_Click(object sender, EventArgs e)
         {
             List<Topic> selectedTopics = new List<Topic>();
@@ -136,12 +154,43 @@ namespace Quiz_Engine
             form.Show();
         }
 
+        // Create custom Quiz
+        private void button6_Click(object sender, EventArgs e)
+        {
+            QuizPreference preferences = new QuizPreference();
+            preferences.Easy = checkedListBox3.GetItemChecked(0);
+            preferences.Intermediate = checkedListBox3.GetItemChecked(1);
+            preferences.Hard = checkedListBox3.GetItemChecked(2);
+
+            preferences.Bookwork = checkedListBox4.GetItemChecked(0);
+            preferences.Background = checkedListBox4.GetItemChecked(1);
+            preferences.Application = checkedListBox4.GetItemChecked(2);
+
+            preferences.QuizSize = Int32.Parse(textBox1.Text);
+
+            List<Topic> selectedTopics = new List<Topic>();
+
+            foreach (object o in checkedListBox2.CheckedItems)
+            {
+                selectedTopics.Add((Topic)o);
+            }
+
+            preferences.Topics = selectedTopics;
+
+            List<Question> questions = db.getQuestionsFromPreferences(preferences);
+            
+            this.Hide();
+            Form form = new Test(questions, selectedTopics, currentUser);
+            form.Closed += (s, args) => this.Show();
+            form.Show();
+        }
+
+        // Take past quiz
         private void testRetake_Button_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count > 0)
             {
                 Quiz quiz = quiz_history.Find(q => q.Id == (int) listView1.SelectedItems[0].Tag);
-                //System.Diagnostics.Debug.WriteLine("Selected item TAG: " + listView1.SelectedItems[0].Tag);
 
                 this.Hide();
                 Form form = new Test(quiz, currentUser);

@@ -12,6 +12,7 @@ namespace Quiz_Engine.Classes
         private Boolean correct = false;
         private Boolean selected = false;
         private int id;
+        private String typedAnswer = "";
 
         
         public Answer(String answer, Boolean correct)
@@ -37,6 +38,18 @@ namespace Quiz_Engine.Classes
             set
             {
                 this.answer = value;
+            }
+        }
+
+        public string TypedAnswer
+        {
+            get
+            {
+                return this.typedAnswer;
+            }
+            set
+            {
+                this.typedAnswer = value;
             }
         }
 

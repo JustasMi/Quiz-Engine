@@ -20,15 +20,6 @@ namespace Quiz_Engine
             InitializeComponent();
         }
 
-        // Continue button
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (listBox1.SelectedItem != null)
-            {
-                goToMainForm(new User(listBox1.GetItemText(listBox1.SelectedItem), Int32.Parse(listBox1.SelectedValue.ToString())));
-            }
-        }
-
         private void Login_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the 'mydbDataSet1.users' table. You can move, or remove it, as needed.
@@ -40,8 +31,26 @@ namespace Quiz_Engine
         // Add new User
         private void button2_Click(object sender, EventArgs e)
         {
-            int userID = db.addUser(textBox1.Text);
+            int userID = db.addUser(textBox1.Text, textBox2.Text.GetHashCode());
             goToMainForm(new User(textBox1.Text, userID));
+        }
+
+        // Continue button
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //System.Diagnostics.Debug.WriteLine(textBox2.Text.GetHashCode());
+            
+            if (listBox1.SelectedItem != null)
+            {
+                if (db.verifyUser(listBox1.SelectedValue.ToString(), textBox3.Text.GetHashCode()))
+                {
+                    goToMainForm(new User(listBox1.GetItemText(listBox1.SelectedItem), Int32.Parse(listBox1.SelectedValue.ToString())));
+                }
+                else
+                {
+                    MessageBox.Show("Invalid password");
+                }
+            }            
         }
 
         private void goToMainForm(User user)
