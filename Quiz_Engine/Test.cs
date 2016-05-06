@@ -25,7 +25,7 @@ namespace Quiz_Engine
         // Variables for quiz retaking
         private bool retakingQuiz = false;
         private Quiz quiz;
-        private List<Topic> selectedTopics;
+        //private List<Topic> selectedTopics;
         
         // Constructor for taking new tests
         public Test(List<Topic> topics, User user)
@@ -54,8 +54,9 @@ namespace Quiz_Engine
 
         public Test(List<Question> questions, List<Topic> selectedTopics, User currentUser)
         {
+            InitializeComponent();
             this.questions = questions;
-            this.selectedTopics = selectedTopics;
+            this.topics = selectedTopics;
             this.currentUser = currentUser;
 
             prepareQuestions(true);
@@ -299,9 +300,32 @@ namespace Quiz_Engine
             }
         }
 
+
+        // Gather the feedback here
         private void feedback_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Quesstion feedback: "+questions[displayedQuestionIndex].Feedback+"\nSelected answer is: ");
+            String selectedAnswer = "";
+            String correctAnswer = "";
+            bool answeredCorrectly = false;
+            if (questions[displayedQuestionIndex].QuestionType == Quiz_Engine.Properties.Resources.trueFalse)
+            {
+                foreach (Answer a in questions[displayedQuestionIndex].Answers)
+                {
+                    if (a.Selected)
+                    {
+                        selectedAnswer = a.AnswerText;
+                    }
+                    if (a.Correct)
+                    {
+                        correctAnswer = a.AnswerText;
+                    }
+                    if (a.Selected && a.Correct)
+                    {
+                        answeredCorrectly = true;
+                    }
+                }
+            }
+            MessageBox.Show("Quesstion feedback: "+questions[displayedQuestionIndex].Feedback+"\nQuestion correctness: "+answeredCorrectly+"\nSelected answer is: "+selectedAnswer+"\nCorrect answer is: "+correctAnswer);
         }
     }
 }

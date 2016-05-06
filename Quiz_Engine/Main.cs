@@ -181,6 +181,7 @@ namespace Quiz_Engine
             
             this.Hide();
             Form form = new Test(questions, selectedTopics, currentUser);
+            //Form form = new Test(selectedTopics, currentUser);
             form.Closed += (s, args) => this.Show();
             form.Show();
         }
