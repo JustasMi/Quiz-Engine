@@ -173,7 +173,7 @@ namespace Quiz_Engine
                     if (correctAnswerCount == q.Answers.Count)
                     {
                         correct_answers += 1;
-                    } 
+                    }
                 }
                 else if (q.QuestionType == Quiz_Engine.Properties.Resources.trueFalse)
                 {

@@ -120,6 +120,142 @@ namespace Quiz_Engine.Classes
             }
         }
 
+        public String getSelectedAnswer()
+        {
+            List<Answer> selectedAnswers = new List<Answer>();
 
+            if (QuestionType == Quiz_Engine.Properties.Resources.trueFalse || QuestionType == Quiz_Engine.Properties.Resources.multipleChoice)
+            {
+                foreach (Answer a in Answers)
+                {
+                    if (a.Selected)
+                    {
+                        selectedAnswers.Add(a);
+                    }
+
+                }
+            }
+            else if (QuestionType == Quiz_Engine.Properties.Resources.fillInTheAnswer)
+            {
+                if (Answers[0].Selected)
+                    selectedAnswers.Add(Answers[0]);
+            }
+            else if (QuestionType == Quiz_Engine.Properties.Resources.multipleAnswer)
+            {
+
+                foreach (Answer a in Answers)
+                {
+                    if (a.Selected)
+                        selectedAnswers.Add(a);
+                }
+            }
+            String returnStrng = "";
+            foreach (Answer a in selectedAnswers)
+            {
+                if (QuestionType == Quiz_Engine.Properties.Resources.fillInTheAnswer)
+                {
+                    returnStrng += a.TypedAnswer + ", ";
+                }
+                else
+                {
+                    returnStrng += a.AnswerText + ", ";
+                }
+            }
+
+            if (returnStrng.Length > 2)
+                returnStrng = returnStrng.Remove(returnStrng.Length - 2);
+            return returnStrng;
+        }
+
+        public String getCorrectAnswer()
+        {
+            List<Answer> selectedAnswers = new List<Answer>();
+
+            if (QuestionType == Quiz_Engine.Properties.Resources.trueFalse || QuestionType == Quiz_Engine.Properties.Resources.multipleChoice)
+            {
+                foreach (Answer a in Answers)
+                {
+                    if (a.Correct)
+                    {
+                        selectedAnswers.Add(a);
+                    }
+
+                }
+            }
+            else if (QuestionType == Quiz_Engine.Properties.Resources.fillInTheAnswer)
+            {
+                selectedAnswers.Add(Answers[0]);
+                /*
+                if (Answers[0].TypedAnswer.Equals(Answers[0].AnswerText, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    answeredCorrectly = true;
+                }
+                selectedAnswer = questions[displayedQuestionIndex].Answers[0].TypedAnswer;
+                correctAnswer = questions[displayedQuestionIndex].Answers[0].AnswerText;
+                 * */
+            }
+            else if (QuestionType == Quiz_Engine.Properties.Resources.multipleAnswer)
+            {
+                foreach (Answer a in Answers)
+                {
+                    if (a.Correct)
+                        selectedAnswers.Add(a);
+                }
+            }
+            String returnStrng = "";
+            foreach (Answer a in selectedAnswers)
+            {
+                returnStrng += a.AnswerText+", ";
+            }
+            if (returnStrng.Length > 2)
+                returnStrng = returnStrng.Remove(returnStrng.Length - 2);
+
+            return returnStrng;
+        }
+        
+        public bool isAnsweredCorrectly()
+        {
+            if (QuestionType == Quiz_Engine.Properties.Resources.multipleChoice)
+            {
+                foreach (Answer a in Answers)
+                {
+                    if (a.Selected && a.Correct)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (QuestionType == Quiz_Engine.Properties.Resources.multipleAnswer)
+            {
+                int correctAnswerCount = 0;
+                foreach (Answer a in Answers)
+                {
+                    if ((a.Correct && a.Selected) || (!a.Correct && !a.Selected))
+                        correctAnswerCount += 1;
+                }
+
+                if (correctAnswerCount == Answers.Count)
+                    return true;
+            }
+            else if (QuestionType == Quiz_Engine.Properties.Resources.trueFalse)
+            {
+                foreach (Answer a in Answers)
+                {
+                    if (a.Selected && a.Correct)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                // Fill in The Answer question
+                if (Answers[0].TypedAnswer.Equals(Answers[0].AnswerText, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
