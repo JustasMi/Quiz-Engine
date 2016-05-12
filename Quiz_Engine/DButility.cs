@@ -444,5 +444,17 @@ namespace Quiz_Engine
             System.Diagnostics.Debug.WriteLine(sqlCommand);
             return questions;
         }
+
+        public bool checkPreviousAnswer(int questionId, int quizId)
+        {
+            String sqlCommand = "SELECT correctlyAnswered FROM mydb.quiz_history_questions WHERE quiz = "+quizId+" AND question = "+questionId+" ORDER BY id DESC LIMIT 1;";
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            MySqlDataReader rdr = command.ExecuteReader();
+            rdr.Read();
+            bool correctness = (bool) rdr[0];
+            rdr.Close();
+            //SELECT correctlyAnswered FROM mydb.quiz_history_questions WHERE quiz = quizID AND question = questionID;
+            return correctness;
+        }
     }
 }

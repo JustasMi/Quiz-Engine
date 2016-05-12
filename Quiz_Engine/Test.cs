@@ -260,7 +260,17 @@ namespace Quiz_Engine
             // SHOW FEEDBACK SCREEN
 
             this.Hide();
-            Form form = new Feedback(questions);
+
+            Form form; 
+            if (retakingQuiz)
+            {
+                form = new Feedback(questions, retakingQuiz, quiz);
+            }
+            else
+            {
+                form = new Feedback(questions, retakingQuiz);
+            }
+            //Form form = new Feedback(questions, retakingQuiz);
             form.Closed += (s, args) => this.Close();
             form.Show();
 

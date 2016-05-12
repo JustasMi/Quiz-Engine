@@ -14,54 +14,84 @@ namespace Quiz_Engine
     public partial class Feedback : Form
     {
         List<Question> questions;
-        public Feedback(List<Question> questions)
+        bool retakingQuiz;
+        Quiz quiz;
+        DButility db = new DButility();
+        public Feedback(List<Question> questions, bool retakingQuiz)
         {
             InitializeComponent();
             this.questions = questions;
+            this.retakingQuiz = retakingQuiz;
+            setupFeedback();
+        }
+
+        public Feedback(List<Question> questions, bool retakingQuiz, Quiz quiz)
+        {
+            InitializeComponent();
+            this.questions = questions;
+            this.retakingQuiz = retakingQuiz;
+            this.quiz = quiz;
             setupFeedback();
         }
 
         private void setupFeedback()
         {
+            FlowLayoutPanel panel = getPanel();
+            panel.Controls.Add(getQuestionHeading("Quiz Summary"));
+            flowLayoutPanel1.Controls.Add(panel);
+
+            int pastQuizSum = 0;
+            int currentQuizSum = 0;
             // Feedback for every question
             for (int i = 0; i < questions.Count; i++ )
             {
-                FlowLayoutPanel panel = new FlowLayoutPanel();
-                panel.Size = new Size(600, 100);
-                panel.FlowDirection = FlowDirection.TopDown;
-                panel.AutoSize = true;
-                panel.WrapContents = false;
+                panel = getPanel();
 
                 panel.Controls.Add(getQuestionHeading("Question "+(i+1)));
                 panel.Controls.Add(getQuestionText(questions[i].QuestionText));
                 panel.Controls.Add(getQuestionText("Answered correctly: "+questions[i].isAnsweredCorrectly().ToString()));
+                if (questions[i].isAnsweredCorrectly())
+                    currentQuizSum += 1;
                 panel.Controls.Add(getSelectedAnswer(questions[i].getSelectedAnswer()));
                 panel.Controls.Add(getCorrectAnswer(questions[i].getCorrectAnswer()));
                 panel.Controls.Add(addFeedbackText(questions[i].Feedback));
+                // IF retaking quiz
+                if (retakingQuiz)
+                {
+                    // CONTINUE HERE
+                    bool previousAnswerCorectness = db.checkPreviousAnswer(questions[i].Id, quiz.Id);
+                    if (previousAnswerCorectness)
+                        pastQuizSum += 1;
+                    string answer = previousAnswerCorectness ? "Correctly" : "Incorrectly";
+                    panel.Controls.Add(getQuestionText("Previously answered: "+answer));
+                }
+
                 flowLayoutPanel1.Controls.Add(panel);
             }
-            // Overall feedback
-            Dictionary<string,List<Question>> dic = new Dictionary<string,List<Question>>();
-
-            /*
-            for (int i = 0; i < questions.Count;i++ )
+            // Overall summarry compared to previous test
+            if (retakingQuiz)
             {
-                if (dic.ContainsKey(questions[i].Topic.Name))
+                string fdb;
+                if (pastQuizSum > currentQuizSum)
                 {
-                    //List<Question> list = dic[q.Topic.Name];
-                    //list.Add(q);
-                    // dic.Remove(q.Topic.Name);
-                    //dic.Add(q.Topic.Name, list);
+                    fdb = "You have performed worse than in the past attempt.";
+                }
+                else if (currentQuizSum > pastQuizSum)
+                {
+                    fdb = "Excellent! Your scores have improved on this test.";
                 }
                 else
                 {
-                    List<Question> list = new List<Question>();
-                    list.Add(questions[i]);
-                    dic.Add(questions[i].Topic.Name, list);
+                    fdb = "Overall score is the same as last time";
                 }
-            }
-             */
+                panel = getPanel();
 
+                panel.Controls.Add(getQuestionText("Performance comparison: "+fdb));
+                flowLayoutPanel1.Controls.Add(panel);
+            }
+
+            // Overall feedback
+            Dictionary<string,List<Question>> dic = new Dictionary<string,List<Question>>();
             
             foreach (Question q in questions)
             {
@@ -85,8 +115,10 @@ namespace Quiz_Engine
             foreach (string key in keys)
             {
                 // Give summaries
-                FlowLayoutPanel panel = getPanel();
+                panel = getPanel();
                 panel.Controls.Add(getQuestionHeading("Topic '" + key + "' summary"));
+                flowLayoutPanel1.Controls.Add(panel);
+
                 Dictionary<string, List<Question>> natureDic = new Dictionary<string, List<Question>>();
                 // Summarise by nature
                 foreach (Question q in dic[key])
@@ -106,11 +138,116 @@ namespace Quiz_Engine
                     }
                 }
 
-                panel.Controls.Add(getQuestionText("Nature summary: "));
+                panel.Controls.Add(getQuestionText("Nature summary: ")); 
                 foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
                 {
-                    panel.Controls.Add(getQuestionText(naturePair.Key + " : "+naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count()+"/" + naturePair.Value.Count + " are correct"));
+                    int totalQuestions = naturePair.Value.Count;
+                    int correctAnswers = naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
+                    int percentage = (100 * correctAnswers) / totalQuestions;
+
+                    panel.Controls.Add(getQuestionText(naturePair.Key + " : "+correctAnswers+"/" + totalQuestions + " ("+percentage+"%) are correct"));
                 }
+
+                // Generate feedback for nature
+                // Nature types 'Application', 'Bookwork', 'Background'
+                //Dictionary<string, List<String>> recommendation = new Dictionary<string, List<String>>();
+                List<String> recommendation = new List<String>();
+                List<String> priorityRecommendation = new List<String>();
+                bool flag = false;
+                if (natureDic.ContainsKey("Application") && natureDic.ContainsKey("Bookwork"))
+                {
+                    int bookWorkPercentage = (100 * natureDic["Bookwork"].Where(q => q.isAnsweredCorrectly()).Count()) / natureDic["Bookwork"].Count;
+                    int applicationPercentage = (100 * natureDic["Application"].Where(q => q.isAnsweredCorrectly()).Count()) / natureDic["Application"].Count;
+                    double coefficient = 1.3;
+                    if (bookWorkPercentage > applicationPercentage * coefficient)
+                    {
+                        // if Bookwork higher (by a third)than application
+                        priorityRecommendation.Add("Bookwork");
+                        flag = true;
+                    }
+                    else if (bookWorkPercentage * coefficient < applicationPercentage)
+                    {
+                        // if Application (by a third) higher than bookwork
+                        priorityRecommendation.Add("Application");
+                        flag = true;
+                    }
+                    else
+                    {
+                        // Check which ones to study if ANY below 80%
+                        foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
+                        {
+                            int totalQuestions = naturePair.Value.Count;
+                            int correctAnswers = naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
+                            int percentage = (100 * correctAnswers) / totalQuestions;
+                            if (percentage <= 60)
+                            {
+                                priorityRecommendation.Add(naturePair.Key);
+                            }
+                            else if (percentage <= 80)
+                            {
+                                recommendation.Add(naturePair.Key);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // check individually
+                    foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
+                    {
+                        int totalQuestions = naturePair.Value.Count;
+                        int correctAnswers = naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
+                        int percentage = (100 * correctAnswers) / totalQuestions;
+                        if (percentage <= 60)
+                        {
+                            priorityRecommendation.Add(naturePair.Key);
+                        }
+                        else if (percentage <= 80)
+                        {
+                            recommendation.Add(naturePair.Key);
+                        }
+                    }
+                }
+                
+                // Display nature feedback
+                panel = getPanel();
+                if (flag)
+                {
+                    if (priorityRecommendation[0] == "Application")
+                        panel.Controls.Add(getQuestionText("Recommendations: Priority. Score suggests that you know the theory, but when required to apply it, the score is considerably worse."));
+                    else
+                        panel.Controls.Add(getQuestionText("Recommendations: Priority. Scores suggests that you are performing better in applying your knowledge, but you lack theoretical knowledge."));
+                }
+                else
+                {
+                    string rec = "Recommendations: ";
+                    if (priorityRecommendation.Count > 0)
+                    {
+                        rec += "Priority. Suggested revision: ";
+                        foreach (String s in priorityRecommendation)
+                        {
+                            rec += s+", ";
+                        }
+                        rec = rec.Remove(rec.Length - 2);
+                    }
+
+                    if (recommendation.Count > 0)
+                    {
+                        if ( priorityRecommendation.Count > 0)
+                        {
+                            rec += "\nRevision should include: ";
+                        }
+
+                        foreach (String s in recommendation)
+                        {
+                            rec += s + ", ";
+                        }
+                        rec = rec.Remove(rec.Length - 2);
+                        rec += " types of questions.";
+                    }
+                    panel.Controls.Add(getQuestionText(rec));
+                }
+                flowLayoutPanel1.Controls.Add(panel);
 
                 // Summarise by difficulty
                 Dictionary<string, List<Question>> diffDic = new Dictionary<string, List<Question>>();
@@ -146,11 +283,6 @@ namespace Quiz_Engine
         private void button1_Click(object sender, EventArgs e)
         {
             setupFeedback();
-            //createQuestionHeading("Question 1");
-            //createQuestionText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
-
-            //createSelectedAnswer("Answer 2");
-            //createCorrectAnswer("Answer 1");
         }
 
 
