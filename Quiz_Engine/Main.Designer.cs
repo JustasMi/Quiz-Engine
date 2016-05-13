@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.titleLabel = new System.Windows.Forms.Label();
@@ -53,6 +52,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.checkedListBox4 = new System.Windows.Forms.CheckedListBox();
@@ -67,8 +68,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.topicsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mydbDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.subjectsBindingSource)).BeginInit();
@@ -77,16 +77,6 @@
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(23, 424);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Test Button";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -274,6 +264,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.checkBox3);
             this.tabPage3.Controls.Add(this.checkBox2);
             this.tabPage3.Controls.Add(this.checkBox1);
             this.tabPage3.Controls.Add(this.label10);
@@ -296,6 +287,26 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Custom Quiz";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(277, 257);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(183, 17);
+            this.checkBox2.TabIndex = 27;
+            this.checkBox2.Text = "Summary feedback after the Quiz";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(277, 234);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(148, 17);
+            this.checkBox1.TabIndex = 26;
+            this.checkBox1.Text = "Feedback during the Quiz";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
@@ -391,7 +402,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(54, 285);
+            this.button6.Location = new System.Drawing.Point(54, 313);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(368, 40);
             this.button6.TabIndex = 12;
@@ -438,25 +449,15 @@
             this.tabPage2.Text = "Past Quizzes";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // checkBox3
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(277, 234);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(148, 17);
-            this.checkBox1.TabIndex = 26;
-            this.checkBox1.Text = "Feedback during the Quiz";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(277, 257);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(183, 17);
-            this.checkBox2.TabIndex = 27;
-            this.checkBox2.Text = "Summary feedback after the Quiz";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(277, 280);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(202, 17);
+            this.checkBox3.TabIndex = 28;
+            this.checkBox3.Text = "Priority to previous \'0 score\' questions";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -468,7 +469,6 @@
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Name = "Main";
             this.Text = "Quiz Engine";
             this.Load += new System.EventHandler(this.Main_Load);
@@ -488,7 +488,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label titleLabel;
@@ -528,6 +527,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }
 

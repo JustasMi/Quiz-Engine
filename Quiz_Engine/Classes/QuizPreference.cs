@@ -18,6 +18,9 @@ namespace Quiz_Engine.Classes
         bool background = false;
         bool application = false;
 
+        bool feedback = false;
+        bool summary = false;
+
         public QuizPreference()
         {
 
@@ -116,6 +119,30 @@ namespace Quiz_Engine.Classes
             set
             {
                 this.topics = value;
+            }
+        }
+
+        public bool Summary
+        {
+            get
+            {
+                return this.summary;
+            }
+            set
+            {
+                this.summary = value;
+            }
+        }
+
+        public bool Feedback
+        {
+            get
+            {
+                return this.feedback;
+            }
+            set
+            {
+                this.feedback = value;
             }
         }
 

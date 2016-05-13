@@ -25,7 +25,8 @@ namespace Quiz_Engine
         // Variables for quiz retaking
         private bool retakingQuiz = false;
         private Quiz quiz;
-        //private List<Topic> selectedTopics;
+
+        QuizPreference preferences;
         
         // Constructor for taking new tests
         public Test(List<Topic> topics, User user)
@@ -51,14 +52,15 @@ namespace Quiz_Engine
             prepareQuestions(false);
             prepareUi();
         }
-
-        public Test(List<Question> questions, List<Topic> selectedTopics, User currentUser)
+        
+        //List<Topic> selectedTopics
+        public Test(List<Question> questions, QuizPreference preferences, User currentUser)
         {
             InitializeComponent();
             this.questions = questions;
-            this.topics = selectedTopics;
+            this.topics = preferences.Topics;
             this.currentUser = currentUser;
-
+            this.preferences = preferences;
             prepareQuestions(true);
             prepareUi();
         }
@@ -365,6 +367,8 @@ namespace Quiz_Engine
                 {
                     answeredCorrectly = true;
                 }
+                selectedAnswer = questions[displayedQuestionIndex].getSelectedAnswer();
+                correctAnswer = questions[displayedQuestionIndex].getCorrectAnswer();
             }
             MessageBox.Show("Quesstion feedback: "+questions[displayedQuestionIndex].Feedback+"\nQuestion correctness: "+answeredCorrectly+"\nSelected answer is: "+selectedAnswer+"\nCorrect answer is: "+correctAnswer);
         }

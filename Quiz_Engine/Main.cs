@@ -40,42 +40,6 @@ namespace Quiz_Engine
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            /*
-            MySqlConnection conn;
-
-            String sql1 = "INSERT INTO test VALUES(7,\"Wohoo c# 3\");";
-            String sql2 = "SELECT * FROM test";
-            String sql3 = "INSERT INTO topics (name) VALUES('Hyo');";
-            try
-            {
-                conn = new MySqlConnection();
-                conn.ConnectionString = myConnectionString;
-                conn.Open();
-
-                MySqlCommand command = new MySqlCommand(sql3, conn);
-                
-                MySqlDataReader rdr = command.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    System.Diagnostics.Debug.WriteLine(rdr[0] + " -- " + rdr[1]);
-                }
-                rdr.Close();
-
-                //command.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-             * */
-
-
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             Form form2 = new Topics();
@@ -176,11 +140,13 @@ namespace Quiz_Engine
             }
 
             preferences.Topics = selectedTopics;
+            preferences.Feedback = checkBox1.Checked;
+            preferences.Summary = checkBox2.Checked;
 
             List<Question> questions = db.getQuestionsFromPreferences(preferences);
             
             this.Hide();
-            Form form = new Test(questions, selectedTopics, currentUser);
+            Form form = new Test(questions, preferences, currentUser);
             //Form form = new Test(selectedTopics, currentUser);
             form.Closed += (s, args) => this.Show();
             form.Show();
