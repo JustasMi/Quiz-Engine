@@ -37,9 +37,7 @@ namespace Quiz_Engine
 
         // Continue button
         private void button1_Click(object sender, EventArgs e)
-        {
-            //System.Diagnostics.Debug.WriteLine(textBox2.Text.GetHashCode());
-            
+        {            
             if (listBox1.SelectedItem != null)
             {
                 if (db.verifyUser(listBox1.SelectedValue.ToString(), textBox3.Text.GetHashCode()))
@@ -55,10 +53,6 @@ namespace Quiz_Engine
 
         private void goToMainForm(User user)
         {
-            //this.Close();
-            //Form main = new Form1(userName);
-            //main.Show();
-
             this.Hide();
             Form form = new Main(user);
             form.Closed += (s, args) => this.Close();

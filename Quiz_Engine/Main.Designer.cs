@@ -52,6 +52,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -68,7 +69,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.topicsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mydbDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.subjectsBindingSource)).BeginInit();
@@ -80,7 +82,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 62);
+            this.button2.Location = new System.Drawing.Point(12, 117);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(141, 43);
             this.button2.TabIndex = 3;
@@ -90,7 +92,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(12, 111);
+            this.button3.Location = new System.Drawing.Point(12, 166);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(141, 43);
             this.button3.TabIndex = 4;
@@ -102,7 +104,7 @@
             // 
             this.titleLabel.AutoSize = true;
             this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleLabel.Location = new System.Drawing.Point(178, 13);
+            this.titleLabel.Location = new System.Drawing.Point(182, 9);
             this.titleLabel.Name = "titleLabel";
             this.titleLabel.Size = new System.Drawing.Size(161, 22);
             this.titleLabel.TabIndex = 5;
@@ -249,6 +251,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.comboBox1);
             this.tabPage1.Controls.Add(this.button4);
             this.tabPage1.Controls.Add(this.label1);
@@ -287,6 +290,16 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Custom Quiz";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(277, 280);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(202, 17);
+            this.checkBox3.TabIndex = 28;
+            this.checkBox3.Text = "Priority to previous \'0 score\' questions";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // checkBox2
             // 
@@ -449,21 +462,32 @@
             this.tabPage2.Text = "Past Quizzes";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // button1
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(277, 280);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(202, 17);
-            this.checkBox3.TabIndex = 28;
-            this.checkBox3.Text = "Priority to previous \'0 score\' questions";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.button1.Location = new System.Drawing.Point(161, 310);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(141, 40);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "View Progress";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(12, 62);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(128, 22);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "Add Questions";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.label11);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.titleLabel);
@@ -528,6 +552,8 @@
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label11;
     }
 }
 

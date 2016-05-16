@@ -169,5 +169,27 @@ namespace Quiz_Engine
                 System.Diagnostics.Debug.WriteLine("Nothing is selected");
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (checkedListBox1.CheckedItems.Count > 0)
+            {
+                //this.Hide();
+                Form form = new Progress(currentUser, getSelectedTopicsFromFastQuiz());
+                form.Show();
+            }
+            
+        }
+
+        private List<Topic> getSelectedTopicsFromFastQuiz()
+        {
+            List<Topic> selectedTopics = new List<Topic>();
+
+            foreach (object o in checkedListBox1.CheckedItems)
+            {
+                selectedTopics.Add((Topic)o);
+            }
+            return selectedTopics;
+        }
     }
 }

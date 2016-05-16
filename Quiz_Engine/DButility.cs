@@ -456,5 +456,35 @@ namespace Quiz_Engine
             //SELECT correctlyAnswered FROM mydb.quiz_history_questions WHERE quiz = quizID AND question = questionID;
             return correctness;
         }
+
+        public TopicProgress getProgress(Topic topic, User user)
+        {
+            Dictionary<string, List<int>> properties = new Dictionary<string, List<int>>();
+            // QUERY returns progress quiz by quiz SELECT a.quiz, SUM(a.correctlyAnswered=1) AS correct, COUNT(a.correctlyAnswered) AS total, b.date FROM quiz_history_questions a, quiz_history b WHERE a.quiz = b.id AND a.topic="+topic.Id+" GROUP BY quiz
+            //OLDER WITHOUT SPECIFYING USER "SELECT SUM(correctlyAnswered=1) AS correct, COUNT(correctlyAnswered) AS total FROM quiz_history_questions WHERE topic="+topic.Id+";";
+            String sqlCommand = "SELECT IFNULL(SUM(a.correctlyAnswered=1),0) AS correct, COUNT(a.correctlyAnswered) AS total FROM quiz_history_questions a, quiz_history b WHERE a.topic="+topic.Id+" AND a.quiz=b.id AND b.user="+user.Id+";";
+
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            MySqlDataReader rdr = command.ExecuteReader();
+            rdr.Read();
+            // READ DATA
+            TopicProgress progress = new TopicProgress(Int32.Parse(rdr[0].ToString()), Int32.Parse(rdr[1].ToString()));
+            rdr.Close();
+
+            sqlCommand = "SELECT IFNULL(SUM(CASE WHEN b.difficulty='Easy' THEN 1 ELSE 0 END),0) AS easy_total, IFNULL(SUM(CASE WHEN b.difficulty='Easy' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS easy_correct, IFNULL(SUM(CASE WHEN b.difficulty='Intermediate' THEN 1 ELSE 0 END),0) AS intermediate_total, IFNULL(SUM(CASE WHEN b.difficulty='Intermediate' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS intermediate_correct, IFNULL(SUM(CASE WHEN b.difficulty='Hard' THEN 1 ELSE 0 END),0) AS hard_total, IFNULL(SUM(CASE WHEN b.difficulty='Hard' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS hard_correct, IFNULL(SUM(CASE WHEN b.nature='Background' THEN 1 ELSE 0 END),0) AS background_total, IFNULL(SUM(CASE WHEN b.nature='Background' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS background_correct, IFNULL(SUM(CASE WHEN b.nature='Application' THEN 1 ELSE 0 END),0) AS application_total, IFNULL(SUM(CASE WHEN b.nature='Application' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS application_correct, IFNULL(SUM(CASE WHEN b.nature='Bookwork' THEN 1 ELSE 0 END),0) AS bookwork_total, IFNULL(SUM(CASE WHEN b.nature='Bookwork' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS bookwork_correct FROM quiz_history_questions a, questions b, quiz_history c WHERE a.question=b.id AND b.topic="+topic.Id+" AND c.id=a.quiz AND c.user="+user.Id+";";
+                //"SELECT SUM(CASE WHEN b.difficulty='Easy' THEN 1 ELSE 0 END) AS easy_total, SUM(CASE WHEN b.difficulty='Easy' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS easy_correct, SUM(CASE WHEN b.difficulty='Intermediate' THEN 1 ELSE 0 END) AS intermediate_total, SUM(CASE WHEN b.difficulty='Intermediate' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS intermediate_correct, SUM(CASE WHEN b.difficulty='Hard' THEN 1 ELSE 0 END) AS hard_total, SUM(CASE WHEN b.difficulty='Hard' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS hard_correct, SUM(CASE WHEN b.nature='Background' THEN 1 ELSE 0 END) AS background_total, SUM(CASE WHEN b.nature='Background' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS background_correct, SUM(CASE WHEN b.nature='Application' THEN 1 ELSE 0 END) AS application_total, SUM(CASE WHEN b.nature='Application' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS application_correct, SUM(CASE WHEN b.nature='Bookwork' THEN 1 ELSE 0 END) AS bookwork_total, SUM(CASE WHEN b.nature='Bookwork' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS bookwork_correct FROM quiz_history_questions a, questions b, quiz_history c WHERE a.question=b.id AND b.topic="+topic.Id+" AND c.id=a.quiz AND c.user="+user.Id+";";
+            command = new MySqlCommand(sqlCommand, conn);
+            rdr = command.ExecuteReader();
+            rdr.Read();
+            properties.Add("Easy", new List<int> { Int32.Parse(rdr[0].ToString()), Int32.Parse(rdr[1].ToString()) });
+            properties.Add("Intermediate", new List<int> { Int32.Parse(rdr[2].ToString()), Int32.Parse(rdr[3].ToString()) });
+            properties.Add("Hard", new List<int> { Int32.Parse(rdr[4].ToString()), Int32.Parse(rdr[5].ToString()) });
+
+            properties.Add("Background", new List<int> { Int32.Parse(rdr[6].ToString()), Int32.Parse(rdr[7].ToString()) });
+            properties.Add("Application", new List<int> { Int32.Parse(rdr[8].ToString()), Int32.Parse(rdr[9].ToString()) });
+            properties.Add("Bookwork", new List<int> { Int32.Parse(rdr[10].ToString()), Int32.Parse(rdr[11].ToString()) });
+            progress.Properties = properties;
+            return progress;
+        }
     }
 }
