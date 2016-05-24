@@ -75,11 +75,19 @@ namespace Quiz_Engine
             }
             toolStripLabel2.Text = topicsLabel.Remove(topicsLabel.Length-2);
 
+            if (preferences != null)
+            {
+                if (!preferences.Help)
+                {
+                    menuStrip1.Visible = false;
+                }
+            }
+            /*
             toolStripProgressBar1.Minimum = 0;
             toolStripProgressBar1.Maximum = questions.Count;
             toolStripProgressBar1.Value = 0;
             toolStripProgressBar1.Step = 1;
-
+            */
             toolStripUserLabel.Text = currentUser.Name;
         }
 
@@ -245,7 +253,7 @@ namespace Quiz_Engine
 
         private void submit_Button_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("You have answered X out of Y questions, do you want to submit the results?(If retaking test, results won't be added)", "Confirmation", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Would you like to submit the results?(If retaking test, results won't be added)", "Confirmation", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
                 if (!retakingQuiz)
@@ -320,7 +328,7 @@ namespace Quiz_Engine
             }
         }
 
-
+        /*
         // Give help if user asks
         private void feedback_Click(object sender, EventArgs e)
         {
@@ -370,7 +378,65 @@ namespace Quiz_Engine
                 selectedAnswer = questions[displayedQuestionIndex].getSelectedAnswer();
                 correctAnswer = questions[displayedQuestionIndex].getCorrectAnswer();
             }
-            MessageBox.Show("Quesstion feedback: "+questions[displayedQuestionIndex].Feedback+"\nQuestion correctness: "+answeredCorrectly+"\nSelected answer is: "+selectedAnswer+"\nCorrect answer is: "+correctAnswer);
+            MessageBox.Show("Quesstion feedback: " + questions[displayedQuestionIndex].Feedback + "\nQuestion correctness: " + answeredCorrectly + "\nSelected answer is: " + selectedAnswer + "\nCorrect answer is: " + correctAnswer);
+        }
+        */
+
+        // Show Feedback
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(questions[displayedQuestionIndex].Feedback))
+            {
+                MessageBox.Show("There is no feedback attached to the question");
+            }
+            else
+            {
+                MessageBox.Show(questions[displayedQuestionIndex].Feedback);
+            }            
+        }
+
+        // Show the correct answer
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Correct answer: " +questions[displayedQuestionIndex].getCorrectAnswer());
+        }
+
+        // Check if answer is correct
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            bool answeredCorrectly = false;
+            if (questions[displayedQuestionIndex].QuestionType == Quiz_Engine.Properties.Resources.trueFalse || questions[displayedQuestionIndex].QuestionType == Quiz_Engine.Properties.Resources.multipleChoice)
+            {
+                foreach (Answer a in questions[displayedQuestionIndex].Answers)
+                {
+                    if (a.Selected && a.Correct)
+                    {
+                        answeredCorrectly = true;
+                    }
+                }
+            }
+            else if (questions[displayedQuestionIndex].QuestionType == Quiz_Engine.Properties.Resources.fillInTheAnswer)
+            {
+                if (questions[displayedQuestionIndex].Answers[0].TypedAnswer.Equals(questions[displayedQuestionIndex].Answers[0].AnswerText, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    answeredCorrectly = true;
+                }
+            }
+            else if (questions[displayedQuestionIndex].QuestionType == Quiz_Engine.Properties.Resources.multipleAnswer)
+            {
+                int correctAnswerCount = 0;
+                foreach (Answer a in questions[displayedQuestionIndex].Answers)
+                {
+                    if ((a.Correct && a.Selected) || (!a.Correct && !a.Selected))
+                        correctAnswerCount += 1;
+                }
+
+                if (correctAnswerCount == questions[displayedQuestionIndex].Answers.Count)
+                {
+                    answeredCorrectly = true;
+                }
+            }
+            MessageBox.Show("Correct answer provided: " + answeredCorrectly);
         }
     }
 }

@@ -72,6 +72,8 @@ namespace Quiz_Engine
             {
                 db.addFillInAnswer(questionID, textBox3.Text);
             }
+            MessageBox.Show("Question has been sucessfully saved.");
+            this.Close();
         }
 
         private void button1_Click(object sender, EventArgs e)

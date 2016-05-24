@@ -18,8 +18,7 @@ namespace Quiz_Engine.Classes
         bool background = false;
         bool application = false;
 
-        bool feedback = false;
-        bool summary = false;
+        bool help = false;
 
         public QuizPreference()
         {
@@ -122,27 +121,15 @@ namespace Quiz_Engine.Classes
             }
         }
 
-        public bool Summary
+        public bool Help
         {
             get
             {
-                return this.summary;
+                return this.help;
             }
             set
             {
-                this.summary = value;
-            }
-        }
-
-        public bool Feedback
-        {
-            get
-            {
-                return this.feedback;
-            }
-            set
-            {
-                this.feedback = value;
+                this.help = value;
             }
         }
 

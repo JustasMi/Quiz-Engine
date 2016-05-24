@@ -140,10 +140,20 @@ namespace Quiz_Engine
             }
 
             preferences.Topics = selectedTopics;
-            preferences.Feedback = checkBox1.Checked;
-            preferences.Summary = checkBox2.Checked;
+            preferences.Help = checkBox1.Checked;
 
-            List<Question> questions = db.getQuestionsFromPreferences(preferences);
+            List<Question> questions = new List<Question>();
+
+            // If user wants to give priority to failed questions
+            if (checkBox3.Checked)
+            {
+                questions.AddRange(db.getPastFailedQuestions(currentUser, preferences.Topics, preferences.QuizSize));
+                // recalculate preferences for the rest of questions
+                preferences.QuizSize = preferences.QuizSize - questions.Count;
+            }
+
+
+            questions.AddRange(db.getQuestionsFromPreferences(preferences));
             
             this.Hide();
             Form form = new Test(questions, preferences, currentUser);

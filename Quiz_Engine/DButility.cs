@@ -316,18 +316,26 @@ namespace Quiz_Engine
             command.ExecuteNonQuery();
         }
 
-        public bool verifyUser(string userId, int hashedPassword)
+        public User verifyUser(string userId, int hashedPassword)
         {
-            String sqlCommand = "SELECT password FROM users WHERE id="+userId+";";
+            String sqlCommand = "SELECT name, id FROM users WHERE name='"+userId+"' AND password="+hashedPassword+";";
+            System.Diagnostics.Debug.WriteLine(sqlCommand);
             MySqlCommand command = new MySqlCommand(sqlCommand, conn);
             MySqlDataReader rdr = command.ExecuteReader();
-            rdr.Read();
-            int password = Int32.Parse(rdr[0].ToString());
+            //rdr.Read();
+            if (rdr.Read())
+            {
+                return new User(userId, Int32.Parse(rdr[1].ToString()));
+            }
+            //int password = Int32.Parse(rdr[0].ToString());
             rdr.Close();
 
+            return null;
+            /*
             if (password == hashedPassword)
                 return true;
             return false;
+             */
         }
 
         public List<Question> getQuestionsFromPreferences(QuizPreference preferences)
@@ -471,7 +479,7 @@ namespace Quiz_Engine
             TopicProgress progress = new TopicProgress(Int32.Parse(rdr[0].ToString()), Int32.Parse(rdr[1].ToString()));
             rdr.Close();
 
-            sqlCommand = "SELECT IFNULL(SUM(CASE WHEN b.difficulty='Easy' THEN 1 ELSE 0 END),0) AS easy_total, IFNULL(SUM(CASE WHEN b.difficulty='Easy' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS easy_correct, IFNULL(SUM(CASE WHEN b.difficulty='Intermediate' THEN 1 ELSE 0 END),0) AS intermediate_total, IFNULL(SUM(CASE WHEN b.difficulty='Intermediate' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS intermediate_correct, IFNULL(SUM(CASE WHEN b.difficulty='Hard' THEN 1 ELSE 0 END),0) AS hard_total, IFNULL(SUM(CASE WHEN b.difficulty='Hard' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS hard_correct, IFNULL(SUM(CASE WHEN b.nature='Background' THEN 1 ELSE 0 END),0) AS background_total, IFNULL(SUM(CASE WHEN b.nature='Background' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS background_correct, IFNULL(SUM(CASE WHEN b.nature='Application' THEN 1 ELSE 0 END),0) AS application_total, IFNULL(SUM(CASE WHEN b.nature='Application' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS application_correct, IFNULL(SUM(CASE WHEN b.nature='Bookwork' THEN 1 ELSE 0 END),0) AS bookwork_total, IFNULL(SUM(CASE WHEN b.nature='Bookwork' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS bookwork_correct FROM quiz_history_questions a, questions b, quiz_history c WHERE a.question=b.id AND b.topic="+topic.Id+" AND c.id=a.quiz AND c.user="+user.Id+";";
+            sqlCommand = "SELECT IFNULL(SUM(CASE WHEN b.difficulty='Easy' THEN 1 ELSE 0 END),0) AS easy_total, IFNULL(SUM(CASE WHEN b.difficulty='Easy' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS easy_correct, IFNULL(SUM(CASE WHEN b.difficulty='Intermediate' THEN 1 ELSE 0 END),0) AS intermediate_total, IFNULL(SUM(CASE WHEN b.difficulty='Intermediate' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS intermediate_correct, IFNULL(SUM(CASE WHEN b.difficulty='Hard' THEN 1 ELSE 0 END),0) AS hard_total, IFNULL(SUM(CASE WHEN b.difficulty='Hard' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS hard_correct, IFNULL(SUM(CASE WHEN b.nature='Background' THEN 1 ELSE 0 END),0) AS background_total, IFNULL(SUM(CASE WHEN b.nature='Background' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS background_correct, IFNULL(SUM(CASE WHEN b.nature='Application' THEN 1 ELSE 0 END),0) AS application_total, IFNULL(SUM(CASE WHEN b.nature='Application' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS application_correct, IFNULL(SUM(CASE WHEN b.nature='Bookwork' THEN 1 ELSE 0 END),0) AS bookwork_total, IFNULL(SUM(CASE WHEN b.nature='Bookwork' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END),0) AS bookwork_correct, COUNT(DISTINCT a.quiz) FROM quiz_history_questions a, questions b, quiz_history c WHERE a.question=b.id AND b.topic=" + topic.Id + " AND c.id=a.quiz AND c.user=" + user.Id + ";";
                 //"SELECT SUM(CASE WHEN b.difficulty='Easy' THEN 1 ELSE 0 END) AS easy_total, SUM(CASE WHEN b.difficulty='Easy' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS easy_correct, SUM(CASE WHEN b.difficulty='Intermediate' THEN 1 ELSE 0 END) AS intermediate_total, SUM(CASE WHEN b.difficulty='Intermediate' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS intermediate_correct, SUM(CASE WHEN b.difficulty='Hard' THEN 1 ELSE 0 END) AS hard_total, SUM(CASE WHEN b.difficulty='Hard' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS hard_correct, SUM(CASE WHEN b.nature='Background' THEN 1 ELSE 0 END) AS background_total, SUM(CASE WHEN b.nature='Background' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS background_correct, SUM(CASE WHEN b.nature='Application' THEN 1 ELSE 0 END) AS application_total, SUM(CASE WHEN b.nature='Application' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS application_correct, SUM(CASE WHEN b.nature='Bookwork' THEN 1 ELSE 0 END) AS bookwork_total, SUM(CASE WHEN b.nature='Bookwork' AND a.correctlyAnswered=1 THEN 1 ELSE 0 END) AS bookwork_correct FROM quiz_history_questions a, questions b, quiz_history c WHERE a.question=b.id AND b.topic="+topic.Id+" AND c.id=a.quiz AND c.user="+user.Id+";";
             command = new MySqlCommand(sqlCommand, conn);
             rdr = command.ExecuteReader();
@@ -483,8 +491,43 @@ namespace Quiz_Engine
             properties.Add("Background", new List<int> { Int32.Parse(rdr[6].ToString()), Int32.Parse(rdr[7].ToString()) });
             properties.Add("Application", new List<int> { Int32.Parse(rdr[8].ToString()), Int32.Parse(rdr[9].ToString()) });
             properties.Add("Bookwork", new List<int> { Int32.Parse(rdr[10].ToString()), Int32.Parse(rdr[11].ToString()) });
+
+            properties.Add("Tests", new List<int> { Int32.Parse(rdr[12].ToString()) });
             progress.Properties = properties;
             return progress;
+        }
+
+        public List<Question> getPastFailedQuestions(User currentUser, List<Topic> list, int limit)
+        {
+            List<Question> questions = new List<Question>();
+            string topicCondition = "";
+            if (list.Count > 1)
+            {
+                topicCondition = "(";
+                foreach (Topic t in list)
+                {
+                    topicCondition += " a.topic = "+t.Id+" OR";
+                }
+                topicCondition = topicCondition.Remove(topicCondition.Length-3);
+                topicCondition += ")";
+            }
+            else
+            {
+                topicCondition = "a.topic = "+list[0].Id;
+            }
+
+            String sqlCommand = "SELECT c.id, c.question, c.question_type, c.difficulty, c.nature, c.feedback, c.topic, d.name FROM quiz_history_questions a, quiz_history b, questions c, topics d WHERE b.id = a.quiz AND c.id = a.question AND d.id=a.topic AND b.user = "+currentUser.Id+" AND "+topicCondition+" AND a.correctlyAnswered = 0 GROUP BY a.question LIMIT "+limit+";";
+            System.Diagnostics.Debug.WriteLine(sqlCommand);
+            MySqlCommand command = new MySqlCommand(sqlCommand, conn);
+            MySqlDataReader rdr = command.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                questions.Add(new Question(Int32.Parse(rdr[0].ToString()), rdr[1].ToString(), new Topic(Int32.Parse(rdr[6].ToString()), rdr[7].ToString()), rdr[2].ToString(), rdr[3].ToString(), rdr[4].ToString(), rdr[5].ToString()));
+            }
+            rdr.Close();
+
+            return questions;
         }
     }
 }

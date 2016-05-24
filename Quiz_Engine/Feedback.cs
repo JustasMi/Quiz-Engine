@@ -117,7 +117,7 @@ namespace Quiz_Engine
                 // Give summaries
                 panel = getPanel();
                 panel.Controls.Add(getQuestionHeading("Topic '" + key + "' summary"));
-                flowLayoutPanel1.Controls.Add(panel);
+                flowLayoutPanel2.Controls.Add(panel);
 
                 Dictionary<string, List<Question>> natureDic = new Dictionary<string, List<Question>>();
                 // Summarise by nature
@@ -147,6 +147,8 @@ namespace Quiz_Engine
 
                     panel.Controls.Add(getQuestionText(naturePair.Key + " : "+correctAnswers+"/" + totalQuestions + " ("+percentage+"%) are correct"));
                 }
+                flowLayoutPanel2.Controls.Add(panel);
+                panel = getPanel();
 
                 // Generate feedback for nature
                 // Nature types 'Application', 'Bookwork', 'Background'
@@ -171,10 +173,11 @@ namespace Quiz_Engine
                         priorityRecommendation.Add("Application");
                         flag = true;
                     }
-                    else
+
+                    // Check which ones to study if ANY below 80%
+                    foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
                     {
-                        // Check which ones to study if ANY below 80%
-                        foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
+                        if (!(flag && (naturePair.Key == "Bookwork" || naturePair.Key == "Application")))
                         {
                             int totalQuestions = naturePair.Value.Count;
                             int correctAnswers = naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
@@ -211,44 +214,44 @@ namespace Quiz_Engine
                 
                 // Display nature feedback
                 panel = getPanel();
+                panel.Controls.Add(getQuestionHeading("Topic '"+key+"' Recommendations"));
                 if (flag)
                 {
-                    if (priorityRecommendation[0] == "Application")
-                        panel.Controls.Add(getQuestionText("Recommendations: Priority. Score suggests that you know the theory, but when required to apply it, the score is considerably worse."));
+                    if (priorityRecommendation[0] != "Application")
+                        panel.Controls.Add(getQuestionText("Priority! Score suggests that you did well in 'Bookwork' questions, but there was a significantly worse score in 'Application' type. You should work on applying theoretical knowledge better."));
                     else
-                        panel.Controls.Add(getQuestionText("Recommendations: Priority. Scores suggests that you are performing better in applying your knowledge, but you lack theoretical knowledge."));
+                        panel.Controls.Add(getQuestionText("Priority! Scores suggests that did well in 'Application' questions, but there was a significantly worse score in 'Bookwork' type. You should learn more theory."));
                 }
-                else
+
+                string rec = "";
+                if (priorityRecommendation.Count > 0)
                 {
-                    string rec = "Recommendations: ";
-                    if (priorityRecommendation.Count > 0)
+                    rec += "Priority! Suggested revision: ";
+                    foreach (String s in priorityRecommendation)
                     {
-                        rec += "Priority. Suggested revision: ";
-                        foreach (String s in priorityRecommendation)
-                        {
-                            rec += s+", ";
-                        }
-                        rec = rec.Remove(rec.Length - 2);
+                        rec += "'"+s+"', ";
                     }
-
-                    if (recommendation.Count > 0)
-                    {
-                        if ( priorityRecommendation.Count > 0)
-                        {
-                            rec += "\nRevision should include: ";
-                        }
-
-                        foreach (String s in recommendation)
-                        {
-                            rec += s + ", ";
-                        }
-                        rec = rec.Remove(rec.Length - 2);
-                        rec += " types of questions.";
-                    }
+                    rec = rec.Remove(rec.Length - 2);
+                    rec += " questions.";
                     panel.Controls.Add(getQuestionText(rec));
                 }
-                flowLayoutPanel1.Controls.Add(panel);
 
+                if (recommendation.Count > 0)
+                {
+                    rec += "Suggested revision: ";
+
+                    foreach (String s in recommendation)
+                    {
+                        rec += "'"+s + "', ";
+                    }
+                    rec = rec.Remove(rec.Length - 2);
+                    rec += " questions.";
+                    panel.Controls.Add(getQuestionText(rec));
+                }
+                
+                flowLayoutPanel3.Controls.Add(panel);
+
+                panel = getPanel();
                 // Summarise by difficulty
                 Dictionary<string, List<Question>> diffDic = new Dictionary<string, List<Question>>();
                 foreach (Question q in dic[key])
@@ -276,7 +279,7 @@ namespace Quiz_Engine
                     panel.Controls.Add(getQuestionText(difficultyPair.Key + " : " + difficultyPair.Value.Where(q => q.isAnsweredCorrectly()).Count() + "/" + difficultyPair.Value.Count + " are correct"));
                 }
 
-                flowLayoutPanel1.Controls.Add(panel);
+                flowLayoutPanel2.Controls.Add(panel);
             }
         }
 

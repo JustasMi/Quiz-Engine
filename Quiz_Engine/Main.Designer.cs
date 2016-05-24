@@ -51,9 +51,9 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -69,7 +69,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.topicsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mydbDataSet1)).BeginInit();
@@ -265,10 +264,19 @@
             this.tabPage1.Text = "Fast Quiz";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(161, 310);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(141, 40);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "View Progress";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.checkBox3);
-            this.tabPage3.Controls.Add(this.checkBox2);
             this.tabPage3.Controls.Add(this.checkBox1);
             this.tabPage3.Controls.Add(this.label10);
             this.tabPage3.Controls.Add(this.textBox1);
@@ -294,31 +302,21 @@
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(277, 280);
+            this.checkBox3.Location = new System.Drawing.Point(277, 257);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(202, 17);
             this.checkBox3.TabIndex = 28;
             this.checkBox3.Text = "Priority to previous \'0 score\' questions";
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(277, 257);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(183, 17);
-            this.checkBox2.TabIndex = 27;
-            this.checkBox2.Text = "Summary feedback after the Quiz";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(277, 234);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(148, 17);
+            this.checkBox1.Size = new System.Drawing.Size(82, 17);
             this.checkBox1.TabIndex = 26;
-            this.checkBox1.Text = "Feedback during the Quiz";
+            this.checkBox1.Text = "Enable help";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // label10
@@ -462,16 +460,6 @@
             this.tabPage2.Text = "Past Quizzes";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(161, 310);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(141, 40);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "View Progress";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -549,7 +537,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Button button1;

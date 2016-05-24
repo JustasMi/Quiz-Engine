@@ -30,13 +30,17 @@ namespace Quiz_Engine
         {
             TopicProgress progress = db.getProgress(selectedTopics[0], currentUser);
             label2.Text = "Topic: " + selectedTopics[0].Name;
+
+            correct_questions_label.Text = "Correctly answered questions: "+progress.Correct;
+            total_questions_label.Text = "Total questions taken: "+progress.Total;
+
             if (progress.Total != 0)
             {
-                label3.Text = progress.Correct + "/" + progress.Total + " (" + (progress.Correct * 100) / progress.Total + "%) correct";
+                label3.Text = progress.Correct + "/" + progress.Total + " (" + (progress.Correct * 100) / progress.Total + "% correct)";
             }
             else
             {
-                label3.Text = progress.Correct + "/" + progress.Total + " (0%) correct";
+                label3.Text = progress.Correct + "/" + progress.Total + " (0% correct)";
             }
 
             progressBar1.Maximum = progress.Total;
@@ -50,6 +54,7 @@ namespace Quiz_Engine
             application_label.Text = formatPropertyString("Application", progress);
             background_label.Text = formatPropertyString("Background", progress);
             bookwork_label.Text = formatPropertyString("Bookwork", progress);
+            test_label.Text = "Tests taken: " + progress.Properties["Tests"][0];
 
         }
 
@@ -59,7 +64,7 @@ namespace Quiz_Engine
             if (progress.Properties.ContainsKey(propertyName))
             {
                 if (progress.Properties[propertyName][0] != 0)
-                    returnStrng = propertyName + ": " + progress.Properties[propertyName][1] + "/" + progress.Properties[propertyName][0] + " ("+(progress.Properties[propertyName][1] * 100) / progress.Properties[propertyName][0]+" %)";
+                    returnStrng = propertyName + ": " + progress.Properties[propertyName][1] + "/" + progress.Properties[propertyName][0] + " ("+(progress.Properties[propertyName][1] * 100) / progress.Properties[propertyName][0]+"% correct)";
             }
 
             return returnStrng;
