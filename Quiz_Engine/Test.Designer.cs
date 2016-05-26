@@ -214,11 +214,11 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(656, 486);
+            this.button3.Location = new System.Drawing.Point(634, 500);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(138, 49);
             this.button3.TabIndex = 13;
-            this.button3.Text = "Submit";
+            this.button3.Text = "Finish the Quiz";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.submit_Button_Click);
             // 

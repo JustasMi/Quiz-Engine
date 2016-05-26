@@ -253,7 +253,7 @@ namespace Quiz_Engine
 
         private void submit_Button_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Would you like to submit the results?(If retaking test, results won't be added)", "Confirmation", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Would you like to submit the results to the database?", "Confirmation", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
                 if (!retakingQuiz)

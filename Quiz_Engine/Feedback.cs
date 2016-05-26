@@ -289,6 +289,114 @@ namespace Quiz_Engine
                 }
 
                 flowLayoutPanel2.Controls.Add(panel);
+                /*
+                int easyPerc;
+                int mediumPerc;
+                int hardPerc;
+                bool easyFlag = false;
+                bool mediumFlag = false;
+                bool hardFlag = false;
+                 */
+                List<string> goodPerf = new List<string>();
+                List<string> badPerf = new List<string>();
+
+                foreach (KeyValuePair<string, List<Question>> difficultyPair in diffDic)
+                {
+                    int correctAnswers = difficultyPair.Value.Where(q => q.isAnsweredCorrectly()).Count();
+                    int totalQuestions = difficultyPair.Value.Count;
+                    int percentage = (100 * correctAnswers) / totalQuestions;
+                    if (percentage >= 80)
+                    {
+                        goodPerf.Add(difficultyPair.Key);
+                    }
+                    else if (percentage <= 60)
+                    {
+                        badPerf.Add(difficultyPair.Key);
+                    }
+                }
+                /*
+                if (diffDic.ContainsKey("Easy"))
+                {
+                    int correctAnswers = diffDic["Easy"].Where(q => q.isAnsweredCorrectly()).Count();
+                    int totalQuestions = diffDic["Easy"].Count;
+                    easyPerc = (correctAnswers * 100 ) / totalQuestions;
+                    easyFlag = true;
+                }
+
+                if (diffDic.ContainsKey("Intermediate"))
+                {
+                    int correctAnswers = diffDic["Intermediate"].Where(q => q.isAnsweredCorrectly()).Count();
+                    int totalQuestions = diffDic["Intermediate"].Count;
+                    mediumPerc = (correctAnswers * 100) / totalQuestions;
+                    mediumFlag = true;
+                }
+
+                if (diffDic.ContainsKey("Hard"))
+                {
+                    int correctAnswers = diffDic["Hard"].Where(q => q.isAnsweredCorrectly()).Count();
+                    int totalQuestions = diffDic["Hard"].Count;
+                    hardPerc = (correctAnswers * 100) / totalQuestions;
+                    hardFlag = true;
+                }
+                 */
+                panel = getPanel();
+                panel.Controls.Add(getQuestionText("Performance by difficulty: "));
+                string goodMsg = "You performed only in : ";
+                foreach (string m in goodPerf)
+                {
+                    goodMsg += "'" + m + "', ";
+                }
+                if (goodPerf.Count > 0)
+                {
+                    goodMsg = goodMsg.Remove(goodMsg.Length-2)+" difficulty questions";
+                }
+
+                string badMsg = "your performance was lacking in: ";
+                foreach (string m in badPerf)
+                {
+                   badMsg += "'" + m + "', ";
+                }
+                if (badPerf.Count > 0)
+                {
+                    badMsg = badMsg.Remove(badMsg.Length - 2) + " difficulty questions";
+                }
+
+                if (goodPerf.Count == 3)
+                {
+                    panel.Controls.Add(getQuestionText("You did really well in all difficulty levels"));
+                }
+                else if (goodPerf.Count == 2)
+                {
+                    if (badPerf.Count > 0)
+                    {
+                        panel.Controls.Add(getQuestionText("You did quite well, however " + badMsg));
+                    }
+                    else
+                    {
+                        panel.Controls.Add(getQuestionText("You did quite well in all difficulty levels"));
+                    }
+                }
+                else if (goodPerf.Count == 1)
+                {
+                    if (badPerf.Count > 0)
+                    {
+                        panel.Controls.Add(getQuestionText(goodMsg + ". However, " + badMsg));
+                    }
+                    else
+                    {
+                        panel.Controls.Add(getQuestionText("You did quite well in all difficulty levels"));
+                    }
+                }
+                else if (goodPerf.Count == 0 && badPerf.Count > 0)
+                {
+                    panel.Controls.Add(getQuestionText("Your scores are not very good, especially "+badMsg));
+                }
+
+                if (goodPerf.Count > 0 || badPerf.Count > 0)
+                {
+                    flowLayoutPanel3.Controls.Add(panel);
+                }
+
             }
         }
 
