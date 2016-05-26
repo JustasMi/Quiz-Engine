@@ -156,6 +156,7 @@ namespace Quiz_Engine
                 List<String> recommendation = new List<String>();
                 List<String> priorityRecommendation = new List<String>();
                 bool flag = false;
+                string analysis = String.Empty;
                 if (natureDic.ContainsKey("Application") && natureDic.ContainsKey("Bookwork"))
                 {
                     int bookWorkPercentage = (100 * natureDic["Bookwork"].Where(q => q.isAnsweredCorrectly()).Count()) / natureDic["Bookwork"].Count;
@@ -164,16 +165,19 @@ namespace Quiz_Engine
                     if (bookWorkPercentage > applicationPercentage * coefficient)
                     {
                         // if Bookwork higher (by a third)than application
-                        priorityRecommendation.Add("Bookwork");
+                        //priorityRecommendation.Add("Bookwork");
+                        analysis = "Priority! Score suggests that you did well in 'Bookwork' questions, but there was a significantly worse score in 'Application' type. You should work on applying theoretical knowledge better.";
                         flag = true;
                     }
                     else if (bookWorkPercentage * coefficient < applicationPercentage)
                     {
                         // if Application (by a third) higher than bookwork
-                        priorityRecommendation.Add("Application");
+                        //priorityRecommendation.Add("Application");
+                        analysis = "Priority! Scores suggests that did well in 'Application' questions, but there was a significantly worse score in 'Bookwork' type. You should learn more theory.";
                         flag = true;
                     }
 
+                    /*
                     // Check which ones to study if ANY below 80%
                     foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
                     {
@@ -192,23 +196,22 @@ namespace Quiz_Engine
                             }
                         }
                     }
+                     */
                 }
-                else
+
+                // check individually
+                foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
                 {
-                    // check individually
-                    foreach (KeyValuePair<string, List<Question>> naturePair in natureDic)
+                    int totalQuestions = naturePair.Value.Count;
+                    int correctAnswers = naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
+                    int percentage = (100 * correctAnswers) / totalQuestions;
+                    if (percentage <= 60)
                     {
-                        int totalQuestions = naturePair.Value.Count;
-                        int correctAnswers = naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
-                        int percentage = (100 * correctAnswers) / totalQuestions;
-                        if (percentage <= 60)
-                        {
-                            priorityRecommendation.Add(naturePair.Key);
-                        }
-                        else if (percentage <= 80)
-                        {
-                            recommendation.Add(naturePair.Key);
-                        }
+                        priorityRecommendation.Add(naturePair.Key);
+                    }
+                    else if (percentage <= 80)
+                    {
+                        recommendation.Add(naturePair.Key);
                     }
                 }
                 
@@ -217,10 +220,13 @@ namespace Quiz_Engine
                 panel.Controls.Add(getQuestionHeading("Topic '"+key+"' Recommendations"));
                 if (flag)
                 {
+                    panel.Controls.Add(getQuestionText(analysis));
+                    /*
                     if (priorityRecommendation[0] != "Application")
                         panel.Controls.Add(getQuestionText("Priority! Score suggests that you did well in 'Bookwork' questions, but there was a significantly worse score in 'Application' type. You should work on applying theoretical knowledge better."));
                     else
                         panel.Controls.Add(getQuestionText("Priority! Scores suggests that did well in 'Application' questions, but there was a significantly worse score in 'Bookwork' type. You should learn more theory."));
+                     */
                 }
 
                 string rec = "";
@@ -276,7 +282,10 @@ namespace Quiz_Engine
                 {
                     // Count correct answers
                     //naturePair.Value.Where(q => q.isAnsweredCorrectly()).Count();
-                    panel.Controls.Add(getQuestionText(difficultyPair.Key + " : " + difficultyPair.Value.Where(q => q.isAnsweredCorrectly()).Count() + "/" + difficultyPair.Value.Count + " are correct"));
+                    int correctAnswers = difficultyPair.Value.Where(q => q.isAnsweredCorrectly()).Count();
+                    int totalQuestions = difficultyPair.Value.Count;
+                    int percentage = (100 * correctAnswers) / totalQuestions;
+                    panel.Controls.Add(getQuestionText(difficultyPair.Key + " : " + correctAnswers + "/" + totalQuestions + " ("+percentage+"%) are correct"));
                 }
 
                 flowLayoutPanel2.Controls.Add(panel);

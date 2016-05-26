@@ -24,7 +24,7 @@ namespace Quiz_Engine
         {
             InitializeComponent();
             currentUser = user;
-            titleLabel.Text = "Hello, "+user.Name+".\nWelcome to this AMAZING Quiz Engine!";
+            titleLabel.Text = "Hello, "+user.Name+".\nTo start a quiz select one of the options below";
 
             setUpPreviousQuizes();
         }
@@ -105,61 +105,76 @@ namespace Quiz_Engine
         // Take fast Quiz
         private void button4_Click(object sender, EventArgs e)
         {
-            List<Topic> selectedTopics = new List<Topic>();
-
-            foreach (object o in checkedListBox1.CheckedItems)
+            if (checkedListBox1.CheckedItems.Count > 0)
             {
-                selectedTopics.Add((Topic) o);
+                List<Topic> selectedTopics = new List<Topic>();
+
+                foreach (object o in checkedListBox1.CheckedItems)
+                {
+                    selectedTopics.Add((Topic)o);
+                }
+
+                this.Hide();
+                Form form = new Test(selectedTopics, currentUser);
+                form.Closed += (s, args) => this.Show();
+                form.Show();
+            }
+            else
+            {
+                MessageBox.Show("Please select a topic");
             }
 
-            this.Hide();
-            Form form = new Test(selectedTopics, currentUser);
-            form.Closed += (s, args) => this.Show();
-            form.Show();
         }
 
         // Create custom Quiz
         private void button6_Click(object sender, EventArgs e)
         {
-            QuizPreference preferences = new QuizPreference();
-            preferences.Easy = checkedListBox3.GetItemChecked(0);
-            preferences.Intermediate = checkedListBox3.GetItemChecked(1);
-            preferences.Hard = checkedListBox3.GetItemChecked(2);
-
-            preferences.Bookwork = checkedListBox4.GetItemChecked(0);
-            preferences.Background = checkedListBox4.GetItemChecked(1);
-            preferences.Application = checkedListBox4.GetItemChecked(2);
-
-            preferences.QuizSize = Int32.Parse(textBox1.Text);
-
-            List<Topic> selectedTopics = new List<Topic>();
-
-            foreach (object o in checkedListBox2.CheckedItems)
+            if (checkedListBox2.CheckedItems.Count > 0)
             {
-                selectedTopics.Add((Topic)o);
+                QuizPreference preferences = new QuizPreference();
+                preferences.Easy = checkedListBox3.GetItemChecked(0);
+                preferences.Intermediate = checkedListBox3.GetItemChecked(1);
+                preferences.Hard = checkedListBox3.GetItemChecked(2);
+
+                preferences.Bookwork = checkedListBox4.GetItemChecked(0);
+                preferences.Background = checkedListBox4.GetItemChecked(1);
+                preferences.Application = checkedListBox4.GetItemChecked(2);
+
+                preferences.QuizSize = Int32.Parse(textBox1.Text);
+
+                List<Topic> selectedTopics = new List<Topic>();
+
+                foreach (object o in checkedListBox2.CheckedItems)
+                {
+                    selectedTopics.Add((Topic)o);
+                }
+
+                preferences.Topics = selectedTopics;
+                preferences.Help = checkBox1.Checked;
+
+                List<Question> questions = new List<Question>();
+
+                // If user wants to give priority to failed questions
+                if (checkBox3.Checked)
+                {
+                    questions.AddRange(db.getPastFailedQuestions(currentUser, preferences.Topics, preferences.QuizSize));
+                    // recalculate preferences for the rest of questions
+                    preferences.QuizSize = preferences.QuizSize - questions.Count;
+                }
+
+
+                questions.AddRange(db.getQuestionsFromPreferences(preferences));
+
+                this.Hide();
+                Form form = new Test(questions, preferences, currentUser);
+                //Form form = new Test(selectedTopics, currentUser);
+                form.Closed += (s, args) => this.Show();
+                form.Show();
             }
-
-            preferences.Topics = selectedTopics;
-            preferences.Help = checkBox1.Checked;
-
-            List<Question> questions = new List<Question>();
-
-            // If user wants to give priority to failed questions
-            if (checkBox3.Checked)
+            else
             {
-                questions.AddRange(db.getPastFailedQuestions(currentUser, preferences.Topics, preferences.QuizSize));
-                // recalculate preferences for the rest of questions
-                preferences.QuizSize = preferences.QuizSize - questions.Count;
-            }
-
-
-            questions.AddRange(db.getQuestionsFromPreferences(preferences));
-            
-            this.Hide();
-            Form form = new Test(questions, preferences, currentUser);
-            //Form form = new Test(selectedTopics, currentUser);
-            form.Closed += (s, args) => this.Show();
-            form.Show();
+                MessageBox.Show("Please select a topic");
+            }           
         }
 
         // Take past quiz
